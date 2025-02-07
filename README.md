@@ -1,4 +1,4 @@
-# 🚀 React Project Starter
+# 🚀 React Project template
 
 A **fully pre-configured** React starter template with **ShadCN, Tailwind CSS, React Router DOM, TanStack Query**, and more. Clone it, delete the dummy pages, and start building! ⚡
 
