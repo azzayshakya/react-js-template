@@ -28,7 +28,6 @@ export default function Home() {
           </div>
         ))}
       </div>
-      <Button></Button>
 
      
     </div>
