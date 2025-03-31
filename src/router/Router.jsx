@@ -1,16 +1,16 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom';
-import Home from '../pages/Home';
-import About from '../pages/About';
-import AdminLayout from '../layout/Admin/AdminLayout';
-import UserPage from '../pages/UserPage';
-import DocsPage from '../pages/DocsPage';
-import CeoLayout from '../layout/Ceo/CeoLayout';
-import ManageTeamPage from '../pages/ManageTeamPage';
-import CompanyOverviewPage from '../pages/CompanyOverviewPage';
-import {ErrorPage} from '../pages/common/ErrorPage';
-import {NotFoundPage} from '../pages/common/NotFoundPage'; 
-import RedirectPage from '../pages/common/RedirectPage';
-import HomeUILayout from '../layout/Home/HomeLayout';
+import { createBrowserRouter, Navigate } from "react-router-dom";
+import Home from "../pages/Home";
+import About from "../pages/About";
+import AdminLayout from "../layout/Admin/AdminLayout";
+import UserPage from "../pages/UserPage";
+import DocsPage from "../pages/DocsPage";
+import CeoLayout from "../layout/Ceo/CeoLayout";
+import ManageTeamPage from "../pages/ManageTeamPage";
+import CompanyOverviewPage from "../pages/CompanyOverviewPage";
+import { ErrorPage } from "../pages/common/ErrorPage";
+import { NotFoundPage } from "../pages/common/NotFoundPage";
+import RedirectPage from "../pages/common/RedirectPage";
+import HomeUILayout from "../layout/Home/HomeLayout";
 
 const router = createBrowserRouter(
   [
@@ -20,8 +20,8 @@ const router = createBrowserRouter(
       errorElement: <ErrorPage />,
       children: [
         {
-          path:"/",
-          element:<Navigate to="/home"/>
+          path: "/",
+          element: <Navigate to="/home" />,
         },
         {
           path: "/home",
@@ -38,7 +38,6 @@ const router = createBrowserRouter(
             // {path:"/admin", element:<Navigate to="/admin/user"/>}
             { path: "user", element: <UserPage /> },
             { path: "docs", element: <DocsPage /> },
-            
           ],
         },
         {
@@ -61,7 +60,7 @@ const router = createBrowserRouter(
       ],
     },
   ],
-  // { basename: import.meta.env.BASE_URL } 
+  // { basename: import.meta.env.BASE_URL }
 );
 
 export default router;
