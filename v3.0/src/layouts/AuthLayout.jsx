@@ -1,80 +1,49 @@
 import { Outlet } from 'react-router-dom'
+import SidebarNav from './components/SidebarNav'
 
 const S = {
-  wrapper: {
+  root: {
+    display: 'flex',
     minHeight: '100vh',
     backgroundColor: '#f5f5f0',
-    display: 'flex',
-    flexDirection: 'column',
     fontFamily: 'Inter, sans-serif',
   },
 
-  // ── Top bar (minimal branding) ──────────────────────
-  topbar: {
-    padding: '16px 24px',
+  sidebar: {
+    width: '220px',
+    backgroundColor: '#ffffff',
+    borderRight: '0.5px solid rgba(0,0,0,0.08)',
     display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-  },
-  logoIcon: {
-    width: '28px',
-    height: '28px',
-    backgroundColor: '#EEEDFE',
-    borderRadius: '8px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '14px',
-  },
-  logoText: {
-    fontSize: '15px',
-    fontWeight: '500',
-    color: '#1a1a1a',
+    flexDirection: 'column',
+    flexShrink: 0,
   },
 
-  // ── Centered content area ───────────────────────────
-  center: {
+  main: {
     flex: 1,
     display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '24px 16px',
-  },
-  card: {
-    backgroundColor: '#ffffff',
-    border: '0.5px solid rgba(0,0,0,0.1)',
-    borderRadius: '16px',
-    padding: '36px',
-    width: '100%',
-    maxWidth: '400px',
+    flexDirection: 'column',
+    minWidth: 0,
   },
 
-  // ── Footer ──────────────────────────────────────────
-  footer: {
-    padding: '16px',
-    textAlign: 'center',
-    fontSize: '12px',
-    color: '#aaa',
+  content: {
+    flex: 1,
+    padding: '24px',
+    overflowY: 'auto',
   },
 }
 
 export default function AuthLayout() {
   return (
-    <div style={S.wrapper}>
-      {/* Minimal top branding */}
-      <div style={S.topbar}>
-        <div style={S.logoIcon}>⚡</div>
-        <span style={S.logoText}>MyApp</span>
-      </div>
+    <div style={S.root}>
+      <aside style={S.sidebar}>
+        <SidebarNav />
+      </aside>
 
-      {/* Auth pages (Login / Register / ForgotPassword) render here */}
-      <div style={S.center}>
-        <div style={S.card}>
+      <div style={S.main}>
+        <main style={S.content}>
           <Outlet />
-        </div>
+        </main>
       </div>
-
-      <div style={S.footer}>© {new Date().getFullYear()} MyApp. All rights reserved.</div>
     </div>
   )
 }

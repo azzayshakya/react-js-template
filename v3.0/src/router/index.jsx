@@ -1,30 +1,51 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { Suspense } from 'react'
-import { ROUTES } from './routes'
+import { Suspense, lazy } from 'react'
+import { ROUTES, ROLES } from './routes'
 import { ProtectedRoute } from './ProtectedRoute'
-import { Dashboard } from './lazyRoutes'
 import MainLayout from '@/layouts/MainLayout'
 import AuthLayout from '@/layouts/AuthLayout'
 import { Login } from '@/pages/Auth/Login'
-// import MainLayout from 'layouts/MainLayout'
-// import AuthLayout from 'layouts/AuthLayout'
+import { Dashboard } from './lazyRoutes'
+
+const Placeholder = ({ name }) => (
+  <div style={{ padding: 40 }}>
+    <h2>{name} Page</h2>
+    <p>Role-restricted route working ✅</p>
+  </div>
+)
 
 const router = createBrowserRouter([
   {
-    path: ROUTES.HOME,
-    element: <ProtectedRoute />,
-    children: [
-      {
-        element: <MainLayout />,
-        children: [{ path: ROUTES.DASHBOARD, element: <Dashboard /> }],
-      },
-    ],
-  },
-  {
     element: <AuthLayout />,
+    children: [{ path: ROUTES.LOGIN, element: <Login /> }],
+  },
+
+  {
+    element: <MainLayout />,
     children: [
-      { path: ROUTES.LOGIN, element: <Login /> },
-      // { path: ROUTES.REGISTER, element: <Register /> },
+      // public
+      { path: ROUTES.ABOUT, element: <Placeholder name="About" /> },
+
+      // needs login
+      {
+        element: <ProtectedRoute />,
+        children: [
+          { path: ROUTES.DASHBOARD, element: <Dashboard /> },
+          { path: ROUTES.HOME, element: <Dashboard /> },
+        ],
+      },
+
+      // admin only
+      {
+        element: <ProtectedRoute allowedRoles={[ROLES.ADMIN]} />,
+        children: [{ path: ROUTES.ACCOUNTS, element: <Placeholder name="Accounts" /> }],
+      },
+
+      // tester only
+      {
+        element: <ProtectedRoute allowedRoles={[ROLES.TESTER]} />,
+        children: [{ path: ROUTES.TESTING, element: <Placeholder name="Testing" /> }],
+      },
     ],
   },
 ])
