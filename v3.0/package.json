@@ -3,17 +3,24 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-    "scripts": {
-      "dev": "vite",
-      "build": "vite build",
-      "preview": "vite preview",
-      "lint": "eslint src --ext .js,.jsx",
-      "lint:fix": "eslint src --ext .js,.jsx --fix",
-      "format": "prettier --write src",
-      "test": "vitest",
-      "test:ui": "vitest --ui",
-      "test:run": "vitest run"
-    },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "format": "prettier --write src",
+    "format:check": "prettier --check src",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "prepare": "husky"
+  },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
     "react": "^19.2.6",
@@ -28,12 +35,12 @@
       "eslint --fix",
       "prettier --write"
     ],
-    "src/**/*.css": [
+    "src/**/*.{css,html}": [
       "prettier --write"
     ]
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
+    "@eslint/js": "^9.39.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
