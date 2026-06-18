@@ -65,7 +65,7 @@ export const useCheckAvailability = <T extends FieldValues, TFieldSchema extends
       form.setError(fieldName, { type: "manual", message: result.error.errors[0].message });
       setAvailabilityMessage(null);
     } else {
-      form.clearErrors(fieldName);
+      form.clearErrors(fieldName)
     }
     return result.success;
   };
