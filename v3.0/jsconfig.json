@@ -4,5 +4,5 @@
     "jsx": "react-jsx",
     "moduleResolution": "bundler"
   },
-  "include": ["src"]
+  "include": ["src", "devStack/pages/NotFoundPage.jsx", "devStack/pages/ErrorPage.jsx"]
 }

@@ -1,15 +1,16 @@
 import { Suspense, lazy } from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
-import { Dashboard } from './lazyRoutes'
-import { ProtectedRoute } from './ProtectedRoute'
-import { ROUTES, ROLES } from './routes'
-
 import AuthLayout from '@/layouts/AuthLayout'
 import MainLayout from '@/layouts/MainLayout'
 import { Login } from '@/pages/Auth/Login'
-import ErrorPage from '@/pages/Common/ErrorPage'
-import NotFoundPage from '@/pages/Common/NotFoundPage'
+
+import ErrorPage from '../../devStack/pages/ErrorPage'
+import NotFoundPage from '../../devStack/pages/NotFoundPage'
+
+import { Dashboard } from './lazyRoutes'
+import { ProtectedRoute } from './ProtectedRoute'
+import { ROUTES, ROLES } from './routes'
 
 const Placeholder = ({ name }) => (
   <div style={{ padding: 40 }}>
