@@ -1,11 +1,15 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { Suspense, lazy } from 'react'
-import { ROUTES, ROLES } from './routes'
-import { ProtectedRoute } from './ProtectedRoute'
-import MainLayout from '@/layouts/MainLayout'
-import AuthLayout from '@/layouts/AuthLayout'
-import { Login } from '@/pages/Auth/Login'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+
 import { Dashboard } from './lazyRoutes'
+import { ProtectedRoute } from './ProtectedRoute'
+import { ROUTES, ROLES } from './routes'
+
+import AuthLayout from '@/layouts/AuthLayout'
+import MainLayout from '@/layouts/MainLayout'
+import { Login } from '@/pages/Auth/Login'
+import ErrorPage from '@/pages/Common/ErrorPage'
+import NotFoundPage from '@/pages/Common/NotFoundPage'
 
 const Placeholder = ({ name }) => (
   <div style={{ padding: 40 }}>
@@ -22,6 +26,7 @@ const router = createBrowserRouter([
 
   {
     element: <MainLayout />,
+    errorElement: <ErrorPage />,
     children: [
       // public
       { path: ROUTES.ABOUT, element: <Placeholder name="About" /> },
@@ -47,6 +52,20 @@ const router = createBrowserRouter([
         children: [{ path: ROUTES.TESTING, element: <Placeholder name="Testing" /> }],
       },
     ],
+  },
+  // {
+  //   element: <AuthLayout />,
+  //   children: [
+  //     {
+  //       path: '*',
+  //       element: <NotFoundPage />,
+  //     },
+  //   ],
+  // },
+
+  {
+    path: '*',
+    element: <NotFoundPage />,
   },
 ])
 
