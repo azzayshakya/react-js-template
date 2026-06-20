@@ -1,10 +1,10 @@
 import axios from 'axios'
 import { toast } from 'sonner'
 
-import { refreshSession } from '../apis/accounts-me-apis'
-import { DEV_JWT_LS_KEY, REQUEST_TIMEOUT } from '../constants'
+import { refreshSession } from '../accounts-me-apis'
+import { DEV_JWT_LS_KEY, REQUEST_TIMEOUT } from '../../constants'
 import { sleep } from '../utils/sleep-util'
-import { removeUserSessionLocally, setUserSessionLocally } from '../utils/user-session-utils'
+import { removeUserSessionLocally, setUserSessionLocally } from '../../utils/user-session-utils'
 
 /**
  * Axios instance configured with a request timeout and JSON content-type header.
