@@ -1,7 +1,7 @@
 import { message } from 'antd'
 import { useEffect, useState } from 'react'
 
-import { getMySession, refreshSession } from '../apis/accounts-me-apis'
+import { getMySession, refreshSession } from '../apiServices/accounts-me-apis'
 import { useUserSessionStore } from '../stores/user-session-store'
 import { redirectToLoginUtil } from '../utils/redirect-utils'
 import {
