@@ -1,22 +1,22 @@
 import { message } from 'antd'
 import { useEffect, useState } from 'react'
 
-import { getMySession, refreshSession } from '../apiServices/accounts-me-apis'
-import { useUserSessionStore } from '../stores/user-session-store'
-import { redirectToLoginUtil } from '../utils/redirect-utils'
+import { getMySession, refreshSession } from '@/apiServices/accounts-me-apis'
+import { useUserSessionStore } from '@/stores/user-session-store'
+import { redirectToLoginUtil } from '@/utils/redirect-utils'
 import {
   isUserSessionValid,
   removeUserSessionLocally,
   setUserSessionLocally,
-} from '../utils/user-session-utils'
+} from '@/utils/user-session-utils'
 
+/** Validates session on app mount — refreshes if needed, redirects to login if invalid */
 export const useValidateUserSession = () => {
   const { setUserSession } = useUserSessionStore()
   const [isPending, setIsPending] = useState(false)
 
   useEffect(() => {
     const validate = async () => {
-      // In PROD, skip API call entirely if session already expired
       if (import.meta.env.PROD && !isUserSessionValid()) {
         redirectToLoginUtil()
         return
@@ -30,11 +30,12 @@ export const useValidateUserSession = () => {
 
         if (!httpResponse) return
 
-        setUserSession(setUserSessionLocally(httpResponse.data))
+        const sessionData = setUserSessionLocally(httpResponse.data)
+        if (sessionData) setUserSession(sessionData)
       } catch (error) {
         message.error(error?.message || 'Session validation failed.')
         setUserSession(null)
-        removeUserSessionLocally(true)
+        removeUserSessionLocally()
         redirectToLoginUtil()
       } finally {
         setIsPending(false)

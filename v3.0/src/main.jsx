@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+
 import VersionUpdate from './components/ui/VersionUpdate'
 import { AppRouter } from './router'
 // import { QueryClientProvider } from '@tanstack/react-query'
@@ -11,6 +12,9 @@ import { AppRouter } from './router'
 // import { AppRouter } from 'router'
 // import 'styles/tokens.css'
 // import 'styles/globals.css'
+
+// const { isPending } = useValidateUserSession()
+//   useAuthSync()
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
