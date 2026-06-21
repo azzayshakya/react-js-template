@@ -1,29 +1,34 @@
-import { cn } from "../lib/utils";
-import { useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
-import "@/react-toolkit/styles/gcl-loader.css";
+import { cn } from '../lib/utils'
+import { useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import '@/react-toolkit/styles/gcl-loader.css'
 
 interface RedirectPageProps {
-  className?: string;
+  className?: string
 }
 
 /* Default message is "Loading...".
    Example URL: redirect?url=https://domain.com/&msg=Please Wait...
 */
 const RedirectPage = ({ className }: RedirectPageProps) => {
-  const [searchParams] = useSearchParams();
+  const [searchParams] = useSearchParams()
 
-  const url = searchParams.get("url");
-  const message = searchParams.get("msg") || "Loading..."; // Default loading message
+  const url = searchParams.get('url')
+  const message = searchParams.get('msg') || 'Loading...' // Default loading message
 
   useEffect(() => {
     if (url) {
-      window.location.assign(url);
+      window.location.assign(url)
     }
-  }, [url]);
+  }, [url])
 
   return (
-    <div className={cn("flex h-screen w-full flex-col items-center justify-center p-3 lg:w-full", className)}>
+    <div
+      className={cn(
+        'flex h-screen w-full flex-col items-center justify-center p-3 lg:w-full',
+        className
+      )}
+    >
       <div className="-mt-4 flex items-center gap-6 text-gray-300">
         <div className="loading-container">
           <div className="loading"></div>
@@ -34,7 +39,7 @@ const RedirectPage = ({ className }: RedirectPageProps) => {
         {message}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export { RedirectPage };
+export { RedirectPage }

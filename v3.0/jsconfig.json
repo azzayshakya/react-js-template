@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "paths": { "@/*": ["./src/*"] },
+    "paths": { "@/*": ["./src/*"], "@devStack/*": ["./devStack/*"] },
     "jsx": "react-jsx",
     "moduleResolution": "bundler"
   },
-  "include": ["src", "devStack/pages/NotFoundPage.jsx", "devStack/pages/ErrorPage.jsx"]
+  "include": ["src", "devStack"]
 }
