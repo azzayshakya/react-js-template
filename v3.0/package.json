@@ -11,7 +11,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "eslint src",
+    "lint": "eslint src devStack",
     "lint:fix": "eslint src --fix",
     "format": "prettier --write src devStack",
     "format:check": "prettier --check src",
