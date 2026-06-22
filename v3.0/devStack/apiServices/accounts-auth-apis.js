@@ -1,4 +1,4 @@
-import { axiosInstance } from '@/lib/axios-instance'
+import { axiosInstance } from './instance/axios-instance'
 
 const baseAPIURL = `${import.meta.env.VITE_ACCOUNTS_API_URL}/auth`
 

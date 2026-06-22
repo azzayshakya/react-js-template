@@ -1,7 +1,7 @@
+import { redirectToLoginUtil } from '@devStack/utils/redirect-utils'
 import { message } from 'antd'
 
-import { axiosInstance } from '@/lib/axios-instance'
-import { redirectToLoginUtil } from '@/utils/redirect-utils'
+import { axiosInstance } from './instance/axios-instance'
 
 const baseAPIURL = `${import.meta.env.VITE_ACCOUNTS_API_URL}/me`
 

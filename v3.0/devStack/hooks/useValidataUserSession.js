@@ -1,14 +1,13 @@
-import { message } from 'antd'
-import { useEffect, useState } from 'react'
-
-import { getMySession, refreshSession } from '@/apiServices/accounts-me-apis'
-import { useUserSessionStore } from '@/stores/user-session-store'
-import { redirectToLoginUtil } from '@/utils/redirect-utils'
+import { getMySession, refreshSession } from '@devStack/apiServices/accounts-me-apis'
+import { useUserSessionStore } from '@devStack/store/Store'
+import { redirectToLoginUtil } from '@devStack/utils/redirect-utils'
 import {
   isUserSessionValid,
   removeUserSessionLocally,
   setUserSessionLocally,
-} from '@/utils/user-session-utils'
+} from '@devStack/utils/user-session-utils'
+import { message } from 'antd'
+import { useEffect, useState } from 'react'
 
 /** Validates session on app mount — refreshes if needed, redirects to login if invalid */
 export const useValidateUserSession = () => {

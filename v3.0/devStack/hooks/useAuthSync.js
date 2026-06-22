@@ -1,8 +1,7 @@
+import { StorageKey } from '@devStack/enums/storage-key-enums'
+import { useUserSessionStore } from '@devStack/store/Store'
+import { redirectToLoginUtil } from '@devStack/utils/redirect-utils'
 import { useEffect } from 'react'
-
-import { StorageKey } from '@/enums/storage-key-enum'
-import { useUserSessionStore } from '@/stores/user-session-store'
-import { redirectToLoginUtil } from '@/utils/redirect-utils'
 
 /**
  * Syncs auth state across browser tabs.

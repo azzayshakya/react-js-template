@@ -1,7 +1,8 @@
+import { REQUEST_TIMEOUT } from '@devStack/constants'
+import { StorageKey } from '@devStack/enums/storage-key-enums'
+import { message } from 'antd'
 import axios from 'axios'
-import { toast } from 'sonner'
 
-import { DEV_JWT_LS_KEY, REQUEST_TIMEOUT } from '../../constants'
 import { removeUserSessionLocally, setUserSessionLocally } from '../../utils/user-session-utils'
 import { refreshSession } from '../accounts-me-apis'
 import { sleep } from '../utils/sleep-util'
@@ -20,7 +21,7 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (request) => {
     if (import.meta.env.DEV) {
-      request.headers['Authorization'] = `Bearer ${localStorage.getItem(DEV_JWT_LS_KEY)}`
+      request.headers['Authorization'] = `Bearer ${localStorage.getItem(StorageKey.JWT_KEY)}`
       request.withCredentials = true
     }
     return request
@@ -69,26 +70,26 @@ axiosInstance.interceptors.response.use(
         return Promise.reject(errorMessage)
 
       case 401:
-        toast.error(errorMessage)
+        message.error(errorMessage)
         removeUserSessionLocally(true)
         break
 
       case 403:
-        toast.error(errorMessage)
+        message.error(errorMessage)
         break
 
       case 404:
-        toast.error(errorMessage)
+        message.error(errorMessage)
         // TODO: Route to 404 page
         break
 
       case 500:
-        toast.error(errorMessage)
+        message.error(errorMessage)
         // TODO: Route to 500 page
         break
 
       default:
-        toast.error(`${error.response.status} Error`, {
+        message.error(`${error.response.status} Error`, {
           description: errorMessage,
         })
         return Promise.reject(error)

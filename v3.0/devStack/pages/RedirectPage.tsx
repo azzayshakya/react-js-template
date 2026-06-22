@@ -1,7 +1,5 @@
-import { cn } from '../lib/utils'
 import { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import '@/react-toolkit/styles/gcl-loader.css'
 
 interface RedirectPageProps {
   className?: string
@@ -24,10 +22,10 @@ const RedirectPage = ({ className }: RedirectPageProps) => {
 
   return (
     <div
-      className={cn(
-        'flex h-screen w-full flex-col items-center justify-center p-3 lg:w-full',
-        className
-      )}
+    // className={cn(
+    //   'flex h-screen w-full flex-col items-center justify-center p-3 lg:w-full',
+    //   className
+    // )}
     >
       <div className="-mt-4 flex items-center gap-6 text-gray-300">
         <div className="loading-container">

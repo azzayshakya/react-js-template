@@ -1,7 +1,40 @@
 import { message } from 'antd'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useReducer, useState } from 'react'
 
-import { axiosInstance } from '@/lib/axios-instance'
+const initialState = {
+  availabilityMessage: null,
+  isAvailable: true,
+  isCheckPending: false,
+}
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'CHECKING':
+      return {
+        ...state,
+        isCheckPending: true,
+        availabilityMessage: { type: 'Gray', message: 'Checking availability...' },
+      }
+    case 'AVAILABLE':
+      return {
+        isAvailable: true,
+        isCheckPending: false,
+        availabilityMessage: { type: 'Green', message: `${action.value} is available` },
+      }
+    case 'TAKEN':
+      return {
+        isAvailable: false,
+        isCheckPending: false,
+        availabilityMessage: null,
+      }
+    case 'RESET':
+      return { ...initialState, isAvailable: action.isAvailable ?? true }
+    case 'ERROR':
+      return { ...state, isCheckPending: false }
+    default:
+      return state
+  }
+}
 
 export const useCheckAvailability = ({
   defaultInputValue = '',
@@ -11,61 +44,50 @@ export const useCheckAvailability = ({
   validateFn,
   checkAvailabilityAPIFn,
 }) => {
-  const [availabilityMessage, setAvailabilityMessage] = useState(null)
+  const [state, dispatch] = useReducer(reducer, initialState)
   const [inputValue, setInputValue] = useState(defaultInputValue)
-  const [isAvailable, setIsAvailable] = useState(true)
-  const [isCheckPending, setIsCheckPending] = useState(false)
 
-  // ── Debounce directly on inputValue ────────────────────────
   useEffect(() => {
-    // Skip check if empty or back to default
     if (!inputValue || inputValue === defaultInputValue) return
 
-    // Skip if field has a validation error
     if (validateFn) {
       const result = validateFn(inputValue)
       if (result !== true) return
     }
 
-    setAvailabilityMessage({ type: 'Gray', message: 'Checking availability...' })
-    setIsCheckPending(true)
+    // Single dispatch = single render, no cascading
+    dispatch({ type: 'CHECKING' })
 
     const handler = setTimeout(async () => {
       try {
         const httpResponse = await checkAvailabilityAPIFn({ userInput: inputValue })
 
         if (httpResponse.data.result) {
-          setIsAvailable(true)
-          setAvailabilityMessage({ type: 'Green', message: `${inputValue} is available` })
+          dispatch({ type: 'AVAILABLE', value: inputValue })
           form.clearErrors(fieldName)
         } else {
-          setIsAvailable(false)
-          setAvailabilityMessage(null)
+          dispatch({ type: 'TAKEN' })
           form.setError(fieldName, { type: 'manual', message: `${inputValue} is already taken` })
         }
       } catch (error) {
+        dispatch({ type: 'ERROR' })
         message.error(error?.message || 'Availability check failed.')
-      } finally {
-        setIsCheckPending(false)
       }
     }, debounceTime)
 
     return () => clearTimeout(handler)
   }, [inputValue]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── Input change handler ────────────────────────────────────
   const handleInputChange = (currentValue) => {
     setInputValue(currentValue)
-    setIsAvailable(false)
-    setAvailabilityMessage(null)
 
-    // Back to default = treat as available immediately
     if (currentValue === defaultInputValue) {
-      setIsAvailable(true)
+      dispatch({ type: 'RESET', isAvailable: true })
       return
     }
 
-    // Run validation and set form error if invalid
+    dispatch({ type: 'RESET', isAvailable: false })
+
     if (validateFn) {
       const result = validateFn(currentValue)
       if (result !== true) {
@@ -78,9 +100,9 @@ export const useCheckAvailability = ({
 
   return {
     inputValue,
-    isAvailable,
-    isCheckPending,
-    availabilityMessage,
+    isAvailable: state.isAvailable,
+    isCheckPending: state.isCheckPending,
+    availabilityMessage: state.availabilityMessage,
     handleInputChange,
   }
 }
