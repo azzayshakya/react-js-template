@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 
-import VersionUpdate from './components/ui/VersionUpdate'
 import { AppRouter } from './router'
+import './index.css'
 // import { QueryClientProvider } from '@tanstack/react-query'
 // import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 // import { queryClient } from 'api/queryClient'

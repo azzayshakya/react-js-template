@@ -8,9 +8,9 @@ import { Login } from '@/pages/Auth/Login'
 import ErrorPage from '../../devStack/pages/ErrorPage'
 import NotFoundPage from '../../devStack/pages/NotFoundPage'
 
-import { Dashboard } from './lazyRoutes'
 import { ProtectedRoute } from './ProtectedRoute'
 import { ROUTES, ROLES } from './routes'
+import Dashboard from '@/pages/Dashboard/Dashboard'
 
 const Placeholder = ({ name }) => (
   <div style={{ padding: 40 }}>
