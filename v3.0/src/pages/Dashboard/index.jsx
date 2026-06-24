@@ -1,3 +1,9 @@
+import SkeletonDemoPage from '@devStack/components/Skelton/SkeletonDemoPage'
+
 export default function index() {
-  return <div>index</div>
+  return (
+    <div>
+      <SkeletonDemoPage />
+    </div>
+  )
 }
