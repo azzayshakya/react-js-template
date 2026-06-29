@@ -1,0 +1,2 @@
+echo "🚀 Husky is running!"
+npm exec lint-staged
