@@ -4,13 +4,13 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import AuthLayout from '@/layouts/AuthLayout'
 import MainLayout from '@/layouts/MainLayout'
 import { Login } from '@/pages/Auth/Login'
+import Dashboard from '@/pages/Dashboard/Dashboard'
 
 import ErrorPage from '../../devStack/pages/ErrorPage'
 import NotFoundPage from '../../devStack/pages/NotFoundPage'
 
 import { ProtectedRoute } from './ProtectedRoute'
 import { ROUTES, ROLES } from './routes'
-import Dashboard from '@/pages/Dashboard/Dashboard'
 
 const Placeholder = ({ name }) => (
   <div style={{ padding: 40 }}>

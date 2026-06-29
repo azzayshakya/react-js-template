@@ -1,5 +1,3 @@
-// src/layouts/components/SidebarNav.jsx
-
 import { NavLink } from 'react-router-dom'
 
 const S = {
@@ -12,7 +10,7 @@ const S = {
   },
   navLabel: {
     fontSize: '11px',
-    color: '#aaa',
+    color: 'var(--sidebar-label-color)',
     fontWeight: '500',
     letterSpacing: '0.06em',
     padding: '8px 8px 4px',
@@ -25,18 +23,21 @@ const S = {
     padding: '8px 10px',
     borderRadius: '8px',
     fontSize: '13.5px',
-    color: '#555',
+    color: 'var(--sidebar-link-color)',
     textDecoration: 'none',
     border: 'none',
     background: 'transparent',
     cursor: 'pointer',
     width: '100%',
-    transition: 'background 0.1s',
+    transition: 'background 0.1s, color 0.1s',
   },
   navLinkActive: {
-    backgroundColor: '#f0effd',
-    color: '#534AB7',
+    backgroundColor: 'var(--sidebar-link-active-bg)',
+    color: 'var(--sidebar-link-active-color)',
     fontWeight: '500',
+  },
+  navLinkHover: {
+    backgroundColor: 'var(--sidebar-link-hover-bg)',
   },
   navIcon: {
     fontSize: '16px',
