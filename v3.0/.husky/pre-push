@@ -1,2 +1,2 @@
-echo "🚀 Husky is running!  yo"
+echo "🚀 Husky is running!  yo yo yo "
 npm exec lint-staged
