@@ -7,17 +7,14 @@ import { removeUserSessionLocally, setUserSessionLocally } from '../../utils/use
 import { refreshSession } from '../accounts-me-apis'
 import { sleep } from '../utils/sleep-util'
 
-/**
- * Axios instance configured with a request timeout and JSON content-type header.
- */
+import { parseApiError } from './parseApiError'
+
 const axiosInstance = axios.create({
   timeout: REQUEST_TIMEOUT,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  headers: { 'Content-Type': 'application/json' },
 })
 
-// Attach JWT from localStorage in DEV environment
+// ── Request interceptor — attach JWT in DEV ────────────────────────────────
 axiosInstance.interceptors.request.use(
   (request) => {
     if (import.meta.env.DEV) {
@@ -29,7 +26,7 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 )
 
-// Handle responses and errors
+// ── Response interceptor ───────────────────────────────────────────────────
 axiosInstance.interceptors.response.use(
   async (response) => {
     if (import.meta.env.DEV) await sleep(import.meta.env.VITE_ARTIFICIAL_DELAY)
@@ -37,11 +34,11 @@ axiosInstance.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config
+    const status = error.response?.status
 
-    // Retry once on 401 (except login/logoff endpoints)
+    // ── Refresh token on 401 (except auth endpoints) ─────────────────────
     if (
-      error.response &&
-      error.response.status === 401 &&
+      status === 401 &&
       !originalRequest._retry &&
       !originalRequest.url.includes('/auth/login') &&
       !originalRequest.url.includes('/me/logoff')
@@ -52,18 +49,13 @@ axiosInstance.interceptors.response.use(
       return axiosInstance(originalRequest)
     }
 
-    let errorMessage = ''
+    // ── Parse error message via shared util ──────────────────────────────
+    const errorMessage = parseApiError(error)
 
-    if (typeof error.response.data === 'string') {
-      errorMessage = error.response.data
-    }
-
-    if (typeof error.response.data === 'object') {
-      console.error(error.response.data.errors)
-      errorMessage = error.response.data.title || 'Something went wrong. Please try again later'
-    }
-
-    switch (error.response.status) {
+    // ── Per-status side effects ──────────────────────────────────────────
+    // For 400 / 409 / 429: reject silently — caller's catch block handles display
+    // For everything else: show message here in the interceptor
+    switch (status) {
       case 400:
       case 409:
       case 429:
@@ -89,9 +81,7 @@ axiosInstance.interceptors.response.use(
         break
 
       default:
-        message.error(`${error.response.status} Error`, {
-          description: errorMessage,
-        })
+        message.error(errorMessage)
         return Promise.reject(error)
     }
   }
