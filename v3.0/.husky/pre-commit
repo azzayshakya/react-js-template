@@ -1,2 +1,2 @@
 echo "🚀 PRE-COMMIT IS WORKING"
-exit 1
+npm exec lint-staged
