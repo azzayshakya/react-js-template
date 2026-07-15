@@ -1,24 +1,26 @@
-import { Navigate, Outlet } from 'react-router-dom'
+import { hasMenuPermission } from '@devStack/components/sidebar/constants/Permission'
+import PageLoader from '@devStack/pages/PageLoader'
+import { Navigate, useLocation } from 'react-router-dom'
 
-import { ROUTES } from './routes'
+// import { useAuthStore } from '@/store/authStore'
 
-const MOCK_USERS = {
-  admin: { isAuthenticated: true, user: { name: 'Admin User', role: 'ADMIN' } },
-  user: { isAuthenticated: true, user: { name: 'Normal User', role: 'USER' } },
-  tester: { isAuthenticated: true, user: { name: 'Tester User', role: 'TESTER' } },
-  guest: { isAuthenticated: false, user: null },
-}
+const ProtectedRoute = ({ menuKey, children }) => {
+  const location = useLocation()
+  // const { isAuthenticated, user, isLoading } = useAuthStore()
+  let isAuthenticated = true
+  let isLoading = false
+  let user = { name: 'ajay', role: 'admin' }
+  if (isLoading) return <PageLoader />
 
-const auth = MOCK_USERS.admin
-
-export function ProtectedRoute({ allowedRoles }) {
-  if (!auth.isAuthenticated) {
-    return <Navigate to={ROUTES.LOGIN} replace />
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location }} replace />
   }
 
-  if (allowedRoles && !allowedRoles.includes(auth.user?.role)) {
-    return <Navigate to={ROUTES.DASHBOARD} replace />
+  if (menuKey && !hasMenuPermission(menuKey, user.role)) {
+    return <Navigate to="/unauthorized" replace />
   }
 
-  return <Outlet />
+  return children
 }
+
+export default ProtectedRoute
