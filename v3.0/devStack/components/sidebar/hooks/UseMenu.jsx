@@ -22,8 +22,6 @@ export const useMenu = ({ defaultSelectedKey = 'dashboard', persistState = true 
   const [openKeys, setOpenKeys] = useState(() => {
     if (persistState) {
       const saved = localStorage.getItem('openMenuKeys')
-      console.log('azopen ', saved ? JSON.parse(saved) : [])
-
       return saved ? JSON.parse(saved) : []
     }
     return []

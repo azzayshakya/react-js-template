@@ -1,7 +1,7 @@
 import MENU_CONFIG from '@devStack/components/sidebar/control/MenuConfig'
 import ROUTES from '@devStack/components/sidebar/control/RouteConfiguration'
 import NotFoundPage from '@devStack/pages/NotFoundPage'
-import PageLoader from '@devStack/pages/PageLoader'
+import PageLoader from '@devStack/components/spinners/PageLoader'
 import Unauthorized from '@devStack/pages/Unauthorized'
 import { Suspense } from 'react'
 import { Routes, Route } from 'react-router-dom'

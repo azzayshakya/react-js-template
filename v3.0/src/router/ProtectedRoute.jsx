@@ -1,5 +1,5 @@
 import { hasMenuPermission } from '@devStack/components/sidebar/constants/Permission'
-import PageLoader from '@devStack/pages/PageLoader'
+import PageLoader from '@devStack/components/spinners/PageLoader'
 import { Navigate, useLocation } from 'react-router-dom'
 
 // import { useAuthStore } from '@/store/authStore'
