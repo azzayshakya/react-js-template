@@ -1,18 +1,5 @@
 @import 'tailwindcss';
 
-/* ============================================================
-   THEME TOKENS
-   Three-tier architecture:
-     1. Primitives   — raw palette values (never use in components directly)
-     2. Semantic     — meaning-based aliases (use these in components)
-     3. Component    — scoped to specific UI pieces
-
-   Only two schemes: light | dark
-   Driven by [data-scheme] on <html>
-   Default (no preference saved) → system OS preference is resolved before mount
-   ============================================================ */
-
-/* ─── Smooth transitions — enabled after first paint to avoid load flash ── */
 .theme-transitions-enabled,
 .theme-transitions-enabled * {
   transition:
@@ -23,8 +10,7 @@
 }
 
 /* ─── Primitive Palette ─────────────────────────────────────────────────── */
-/* These are the only raw values in the entire system.
-   Never reference these in components — always go through semantic tokens.  */
+
 :root {
   /* Brand — Indigo/Purple */
   --primitive-indigo-50: #f0effd;
@@ -55,9 +41,6 @@
   --primitive-emerald-500: #10b981;
 }
 
-/* ============================================================
-   LIGHT SCHEME
-   ============================================================ */
 [data-scheme='light'] {
   /* ── Semantic — Backgrounds ── */
   --color-bg-base: var(--primitive-gray-50); /* page background */
