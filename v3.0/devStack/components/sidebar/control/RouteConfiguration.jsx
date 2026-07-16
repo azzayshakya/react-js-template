@@ -12,4 +12,3 @@ export const getRoute = (key) => {
 export const getKeyFromRoute = (path) => {
   return Object.keys(ROUTES).find((key) => ROUTES[key] === path) || null
 }
-export default ROUTES

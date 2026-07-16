@@ -4,6 +4,8 @@ import MENU_CONFIG from '@devStack/components/sidebar/control/MenuConfig'
 import useMenu from '@devStack/components/sidebar/hooks/UseMenu'
 import { buildBreadcrumbs } from '@devStack/components/sidebar/utilities/breadCrumbBuilder'
 import { buildMenuItems } from '@devStack/components/sidebar/utilities/MenuBuilder'
+import { App_Name } from '@devStack/constants'
+import useThemeStore from '@devStack/store/useThemeStore'
 import { Layout, Menu, theme, Typography } from 'antd'
 import { useState, useMemo } from 'react'
 import { Outlet } from 'react-router-dom'
@@ -13,7 +15,7 @@ const { Text } = Typography
 
 const MainLayout = ({ userRole = USER_ROLES.ADMIN, userData = null }) => {
   const [collapsed, setCollapsed] = useState(false)
-
+  const scheme = useThemeStore((s) => s.scheme)
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken()
@@ -65,12 +67,12 @@ const MainLayout = ({ userRole = USER_ROLES.ADMIN, userData = null }) => {
               transition: 'font-size 0.3s',
             }}
           >
-            {collapsed ? 'EIE' : 'Elmech'}
+            {collapsed ? `${App_Name}` : `${App_Name}`}
           </Text>
         </div>
 
         <Menu
-          theme="dark"
+          theme={scheme === 'dark' ? 'dark' : 'light'}
           mode="inline"
           selectedKeys={selectedKeys}
           openKeys={openKeys}

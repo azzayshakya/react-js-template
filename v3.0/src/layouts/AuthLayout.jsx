@@ -1,7 +1,5 @@
 import { Outlet } from 'react-router-dom'
 
-import SidebarNav from './components/SidebarNav'
-
 const S = {
   root: {
     display: 'flex',
@@ -36,9 +34,7 @@ const S = {
 export default function AuthLayout() {
   return (
     <div style={S.root}>
-      <aside style={S.sidebar}>
-        <SidebarNav />
-      </aside>
+      {/* <aside style={S.sidebar}></aside> */}
 
       <div style={S.main}>
         <main style={S.content}>
