@@ -35,111 +35,86 @@
   --primitive-gray-900: #14141b;
   --primitive-gray-950: #0d0d12;
 
-  /* Status — used by StatusTag and alert components */
+  /* Status */
   --primitive-red-500: #ef4444;
   --primitive-amber-500: #f59e0b;
   --primitive-emerald-500: #10b981;
+
+  /* Layout defaults (scheme-independent) */
+  --page-padding: 24px;
+  --page-padding-sm: 16px;
+  --radius: 8px;
+  --radius-sm: 6px;
 }
 
+/* ============================================================
+   LIGHT SCHEME
+   ============================================================ */
 [data-scheme='light'] {
-  /* ── Semantic — Backgrounds ── */
-  --color-bg-base: var(--primitive-gray-50); /* page background */
-  --color-bg-surface: var(--primitive-white); /* cards, panels */
-  --color-bg-elevated: var(--primitive-white); /* modals, dropdowns */
-  --color-bg-subtle: var(--primitive-gray-100); /* table rows, sections */
-  --color-bg-hover: var(--primitive-gray-100); /* hover states */
+  /* Brand */
+  --color-primary: var(--primitive-indigo-500);
+  --color-primary-hover: var(--primitive-indigo-600);
+  --color-primary-light: var(--primitive-indigo-50);
 
-  /* ── Semantic — Text ── */
-  --color-text-primary: var(--primitive-gray-900);
+  --color-secondary: var(--primitive-gray-600);
+  --color-secondary-hover: var(--primitive-gray-700);
+  --color-secondary-light: var(--primitive-gray-100);
+
+  /* Backgrounds */
+  --color-bg: var(--primitive-gray-50); /* page bg */
+  --color-bg-container: var(--primitive-white); /* cards, panels */
+  --color-bg-elevated: var(--primitive-white); /* modals, dropdowns */
+  --color-bg-hover: var(--primitive-gray-100);
+
+  /* Text */
+  --color-text: var(--primitive-gray-900);
   --color-text-secondary: var(--primitive-gray-600);
   --color-text-muted: var(--primitive-gray-400);
   --color-text-inverse: var(--primitive-white);
 
-  /* ── Semantic — Borders ── */
-  --color-border-default: var(--primitive-gray-200);
-  --color-border-strong: var(--primitive-gray-300);
+  /* Borders */
+  --color-border: var(--primitive-gray-200);
+  --color-border-secondary: var(--primitive-gray-300);
 
-  /* ── Semantic — Accent (brand) ── */
-  --color-accent: var(--primitive-indigo-500);
-  --color-accent-hover: var(--primitive-indigo-600);
-  --color-accent-subtle: var(--primitive-indigo-50);
-  --color-accent-text: var(--primitive-indigo-500);
-
-  /* ── Semantic — Status ── */
-  --color-status-error: var(--primitive-red-500);
-  --color-status-warning: var(--primitive-amber-500);
-  --color-status-success: var(--primitive-emerald-500);
-
-  /* ── Component — Sidebar ── */
-  --sidebar-bg: var(--primitive-white);
-  --sidebar-border: var(--primitive-gray-200);
-  --sidebar-link-color: var(--primitive-gray-600);
-  --sidebar-link-hover-bg: var(--primitive-gray-100);
-  --sidebar-link-active-bg: var(--primitive-indigo-50);
-  --sidebar-link-active-color: var(--primitive-indigo-500);
-  --sidebar-label-color: var(--primitive-gray-400);
-
-  /* ── Component — Topbar ── */
-  --topbar-bg: var(--primitive-white);
-  --topbar-border: var(--primitive-gray-200);
-  --topbar-text: var(--primitive-gray-900);
-
-  /* ── Component — Theme Toggle button ── */
-  --toggle-bg: var(--primitive-gray-100);
-  --toggle-bg-hover: var(--primitive-gray-200);
-  --toggle-icon-color: var(--primitive-gray-600);
+  /* Status */
+  --color-error: var(--primitive-red-500);
+  --color-warning: var(--primitive-amber-500);
+  --color-success: var(--primitive-emerald-500);
 }
 
 /* ============================================================
    DARK SCHEME
    ============================================================ */
 [data-scheme='dark'] {
-  /* ── Semantic — Backgrounds ── */
-  --color-bg-base: var(--primitive-gray-950);
-  --color-bg-surface: var(--primitive-gray-900);
+  /* Brand */
+  --color-primary: var(--primitive-indigo-300);
+  --color-primary-hover: var(--primitive-indigo-100);
+  --color-primary-light: rgba(83, 74, 183, 0.15);
+
+  --color-secondary: var(--primitive-gray-400);
+  --color-secondary-hover: var(--primitive-gray-300);
+  --color-secondary-light: var(--primitive-gray-800);
+
+  /* Backgrounds */
+  --color-bg: var(--primitive-gray-950);
+  --color-bg-container: var(--primitive-gray-900);
   --color-bg-elevated: var(--primitive-gray-850);
-  --color-bg-subtle: var(--primitive-gray-800);
   --color-bg-hover: var(--primitive-gray-800);
 
-  /* ── Semantic — Text ── */
-  --color-text-primary: var(--primitive-gray-50);
+  /* Text */
+  --color-text: var(--primitive-gray-50);
   --color-text-secondary: var(--primitive-gray-400);
   --color-text-muted: var(--primitive-gray-500);
   --color-text-inverse: var(--primitive-gray-950);
 
-  /* ── Semantic — Borders ── */
-  --color-border-default: var(--primitive-gray-800);
-  --color-border-strong: var(--primitive-gray-700);
+  /* Borders */
+  --color-border: var(--primitive-gray-800);
+  --color-border-secondary: var(--primitive-gray-700);
 
-  /* ── Semantic — Accent (brand) ── */
-  --color-accent: var(--primitive-indigo-300);
-  --color-accent-hover: var(--primitive-indigo-100);
-  --color-accent-subtle: rgba(83, 74, 183, 0.15);
-  --color-accent-text: var(--primitive-indigo-300);
-
-  /* ── Semantic — Status ── */
-  --color-status-error: var(--primitive-red-500);
-  --color-status-warning: var(--primitive-amber-500);
-  --color-status-success: var(--primitive-emerald-500);
-
-  /* ── Component — Sidebar ── */
-  --sidebar-bg: var(--primitive-gray-900);
-  --sidebar-border: var(--primitive-gray-800);
-  --sidebar-link-color: var(--primitive-gray-400);
-  --sidebar-link-hover-bg: var(--primitive-gray-800);
-  --sidebar-link-active-bg: rgba(83, 74, 183, 0.18);
-  --sidebar-link-active-color: var(--primitive-indigo-300);
-  --sidebar-label-color: var(--primitive-gray-500);
-
-  /* ── Component — Topbar ── */
-  --topbar-bg: var(--primitive-gray-900);
-  --topbar-border: var(--primitive-gray-800);
-  --topbar-text: var(--primitive-gray-50);
-
-  /* ── Component — Theme Toggle button ── */
-  --toggle-bg: var(--primitive-gray-800);
-  --toggle-bg-hover: var(--primitive-gray-700);
-  --toggle-icon-color: var(--primitive-gray-400);
+  /* Status (same in both schemes) */
+  --color-error: var(--primitive-red-500);
+  --color-warning: var(--primitive-amber-500);
+  --color-success: var(--primitive-emerald-500);
 }
 
 /* ─── Global base styles ────────────────────────────────────────────────── */
@@ -152,8 +127,8 @@
 }
 
 body {
-  background-color: var(--color-bg-base);
-  color: var(--color-text-primary);
+  background-color: var(--color-bg);
+  color: var(--color-text);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
 }

@@ -6,7 +6,7 @@ import { buildBreadcrumbs } from '@devStack/components/sidebar/utilities/breadCr
 import { buildMenuItems } from '@devStack/components/sidebar/utilities/MenuBuilder'
 import { App_Name } from '@devStack/constants'
 import useThemeStore from '@devStack/store/useThemeStore'
-import { Layout, Menu, theme, Typography } from 'antd'
+import { Layout, Menu, Typography } from 'antd'
 import { useState, useMemo } from 'react'
 import { Outlet } from 'react-router-dom'
 
@@ -16,9 +16,7 @@ const { Text } = Typography
 const MainLayout = ({ userRole = USER_ROLES.ADMIN, userData = null }) => {
   const [collapsed, setCollapsed] = useState(false)
   const scheme = useThemeStore((s) => s.scheme)
-  const {
-    token: { colorBgContainer, borderRadiusLG },
-  } = theme.useToken()
+
   const { selectedKeys, openKeys, handleMenuClick, handleOpenChange } = useMenu({
     defaultSelectedKey: 'dashboard',
     persistState: true,
@@ -46,6 +44,8 @@ const MainLayout = ({ userRole = USER_ROLES.ADMIN, userData = null }) => {
           left: 0,
           top: 0,
           bottom: 0,
+          background: 'var(--color-bg-container)',
+          borderRight: '1px solid var(--color-border)',
         }}
       >
         <div
@@ -54,15 +54,15 @@ const MainLayout = ({ userRole = USER_ROLES.ADMIN, userData = null }) => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            background: 'rgba(255, 255, 255, 0.1)',
+            background: 'var(--color-primary-light)',
             margin: '16px',
-            borderRadius: '8px',
+            borderRadius: 'var(--radius)',
           }}
         >
           <Text
             strong
             style={{
-              color: 'white',
+              color: 'var(--color-primary)',
               fontSize: collapsed ? '16px' : '20px',
               transition: 'font-size 0.3s',
             }}
@@ -79,6 +79,7 @@ const MainLayout = ({ userRole = USER_ROLES.ADMIN, userData = null }) => {
           items={menuItems}
           onClick={handleMenuClick}
           onOpenChange={handleOpenChange}
+          style={{ background: 'transparent', borderInlineEnd: 'none' }}
         />
       </Sider>
 
@@ -89,7 +90,7 @@ const MainLayout = ({ userRole = USER_ROLES.ADMIN, userData = null }) => {
         }}
       >
         <AdminHeaderComponent
-          colorBgContainer={colorBgContainer}
+          colorBgContainer="var(--color-bg-container)"
           setCollapsed={setCollapsed}
           collapsed={collapsed}
           userData={userData}
@@ -98,16 +99,16 @@ const MainLayout = ({ userRole = USER_ROLES.ADMIN, userData = null }) => {
 
         <div
           style={{
-            // minHeight: "calc(100vh - 64px)",
-            background: colorBgContainer,
-            borderRadius: borderRadiusLG,
+            background: 'var(--color-bg-container)',
+            borderRadius: 'var(--radius)',
+            padding: 'var(--page-padding)',
             flex: 1,
           }}
         >
           <Outlet />
         </div>
 
-        {/* <AdminFooterComponentx color={colorBgContainer} /> */}
+        {/* <AdminFooterComponentx color="var(--color-bg-container)" /> */}
       </Layout>
     </Layout>
   )

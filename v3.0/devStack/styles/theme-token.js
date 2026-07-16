@@ -25,23 +25,41 @@ export const PRIMITIVES = {
   emerald500: '#10b981',
 }
 
-export const getAntdTheme = (scheme) => ({
-  algorithm: scheme === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm,
-  token: {
-    colorPrimary: scheme === 'dark' ? PRIMITIVES.indigo300 : PRIMITIVES.indigo500,
-    colorBgContainer: scheme === 'dark' ? PRIMITIVES.gray900 : PRIMITIVES.white,
-    colorBgLayout: scheme === 'dark' ? PRIMITIVES.gray950 : PRIMITIVES.gray50,
-    colorBgElevated: scheme === 'dark' ? PRIMITIVES.gray850 : PRIMITIVES.white,
-    colorBorder: scheme === 'dark' ? PRIMITIVES.gray800 : PRIMITIVES.gray200,
-    colorBorderSecondary: scheme === 'dark' ? PRIMITIVES.gray700 : PRIMITIVES.gray300,
-    colorText: scheme === 'dark' ? PRIMITIVES.gray50 : PRIMITIVES.gray900,
-    colorTextSecondary: scheme === 'dark' ? PRIMITIVES.gray400 : PRIMITIVES.gray600,
-    colorTextTertiary: scheme === 'dark' ? PRIMITIVES.gray500 : PRIMITIVES.gray400,
-    colorError: PRIMITIVES.red500,
-    colorWarning: PRIMITIVES.amber500,
-    colorSuccess: PRIMITIVES.emerald500,
-    borderRadius: 8,
-  },
-})
+export const getAntdTheme = (scheme) => {
+  const isDark = scheme === 'dark'
+
+  return {
+    algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
+    token: {
+      // Brand
+      colorPrimary: isDark ? PRIMITIVES.indigo300 : PRIMITIVES.indigo500,
+      colorPrimaryHover: isDark ? PRIMITIVES.indigo100 : PRIMITIVES.indigo600,
+      colorPrimaryBg: isDark ? 'rgba(83, 74, 183, 0.15)' : PRIMITIVES.indigo50,
+
+      // Backgrounds
+      colorBgLayout: isDark ? PRIMITIVES.gray950 : PRIMITIVES.gray50,
+      colorBgContainer: isDark ? PRIMITIVES.gray900 : PRIMITIVES.white,
+      colorBgElevated: isDark ? PRIMITIVES.gray850 : PRIMITIVES.white,
+
+      // Text
+      colorText: isDark ? PRIMITIVES.gray50 : PRIMITIVES.gray900,
+      colorTextSecondary: isDark ? PRIMITIVES.gray400 : PRIMITIVES.gray600,
+      colorTextTertiary: isDark ? PRIMITIVES.gray500 : PRIMITIVES.gray400,
+
+      // Borders
+      colorBorder: isDark ? PRIMITIVES.gray800 : PRIMITIVES.gray200,
+      colorBorderSecondary: isDark ? PRIMITIVES.gray700 : PRIMITIVES.gray300,
+
+      // Status
+      colorError: PRIMITIVES.red500,
+      colorWarning: PRIMITIVES.amber500,
+      colorSuccess: PRIMITIVES.emerald500,
+
+      // Layout defaults
+      borderRadius: 8,
+      padding: 24,
+    },
+  }
+}
 
 export default getAntdTheme
