@@ -1,585 +1,383 @@
-import {
-  CodeOutlined,
-  CompassOutlined,
-  EyeOutlined,
-  FolderOpenOutlined,
-  LockOutlined,
-  RightOutlined,
-  SafetyCertificateOutlined,
-  ThunderboltOutlined,
-} from '@ant-design/icons'
-import React, { useState } from 'react'
+import './AboutUs.css'
 
-const About = () => {
-  const [hoveredCard, setHoveredCard] = useState(null)
-  const [activeTab, setActiveTab] = useState(0)
+// ---- palette pulled from the project's own theme tokens (global.css) ----
+// Every value here is a CSS variable reference, so the page follows
+// [data-scheme='dark' | 'light'] automatically — no hardcoded hex.
+const colors = {
+  bg: 'var(--color-bg)',
+  ring: 'var(--term-green)',
+  ringDim: 'var(--term-green-dim)',
+  ringSoft: 'var(--primitive-green-300)',
+  accent: 'var(--color-primary)',
+  onAccent: 'var(--color-bg)',
+  text: 'var(--color-text)',
+  textMuted: 'var(--color-text-secondary)',
+  textMuted2: 'var(--color-text-muted)',
+  cardBg: 'var(--color-bg-container)',
+  cardBorder: 'var(--color-border)',
+  cardBorderStrong: 'var(--color-border-secondary)',
+  navBg: 'var(--color-bg-container)',
+  navText: 'var(--color-text)',
+  navTextMuted: 'var(--color-text-secondary)',
+}
 
-  const cards = [
-    {
-      id: '01',
-      icon: <SafetyCertificateOutlined style={{ fontSize: 24, color: 'var(--color-primary)' }} />,
-      title: 'Autonomous Defense',
-      subtitle: 'Zero-Trust Architecture',
-      description:
-        'Deterministic protocol execution that analyzes vector anomalies and neutralizes unauthorized ingress before execution.',
-      stat: '99.99%',
-      statLabel: 'THREAT DEFLECTION',
-    },
-    {
-      id: '02',
-      icon: <FolderOpenOutlined style={{ fontSize: 24, color: 'var(--color-primary)' }} />,
-      title: 'Knowledge Vaults',
-      subtitle: 'Synchronized Intelligence',
-      description:
-        'Instantaneous heuristics capture. Structuring raw developer notes and cryptographic credentials into encrypted nodes.',
-      stat: '< 10ms',
-      statLabel: 'READ LATENCY',
-    },
-    {
-      id: '03',
-      icon: <ThunderboltOutlined style={{ fontSize: 24, color: 'var(--color-primary)' }} />,
-      title: 'Quantum Guardrails',
-      subtitle: 'Hardened Session Control',
-      description:
-        'Continuous session attestation paired with ephemeral tokens, ensuring absolute data integrity at rest and in transit.',
-      stat: '256-BIT',
-      statLabel: 'ENCRYPTION TIER',
-    },
-  ]
+const SERVICES = [
+  {
+    title: 'Delivering seamless\nexperiences',
+    body: 'We make it easy. Complex workflows become effortless progress from the very first click.',
+  },
+  {
+    title: 'Orchestrating\nunified frameworks',
+    body: 'We keep it simple. One system replaces the tangle of typed limitations you inherited.',
+  },
+  {
+    title: 'Compounding\npartnership gains',
+    body: 'We go far by going together. Every engagement compounds into something that lasts.',
+  },
+]
 
+function Star({ top, left, size = 4, delay = 0 }) {
+  return (
+    <span
+      className="eh-star"
+      style={{
+        position: 'absolute',
+        top,
+        left,
+        width: size,
+        height: size,
+        borderRadius: '50%',
+        backgroundColor: 'var(--term-green)',
+        boxShadow: '0 0 6px 1px rgba(57, 255, 106, 0.7)',
+        animationDelay: `${delay}s`,
+      }}
+    />
+  )
+}
+
+export default function AboutUs() {
   return (
     <div
       style={{
-        position: 'relative',
+        backgroundColor: colors.bg,
+        color: colors.text,
         minHeight: '100vh',
-        width: '100%',
-        background: 'var(--color-bg)',
-        color: 'var(--color-text)',
-        fontFamily: 'var(--term-font, -apple-system, BlinkMacSystemFont, sans-serif)',
+        fontFamily:
+          '"Poppins", "Quicksand", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
         overflowX: 'hidden',
-        padding: '0 24px 60px 24px',
-        boxSizing: 'border-box',
       }}
     >
-      <style>{`
-        @keyframes eclipsePulse {
-          0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.85; }
-          50% { transform: translate(-50%, -50%) scale(1.04); opacity: 1; }
-        }
-        @keyframes termBlink {
-          0%, 50% { opacity: 1; }
-          51%, 100% { opacity: 0; }
-        }
-        @keyframes scanSweep {
-          0% { transform: translateY(-100%); opacity: 0; }
-          50% { opacity: 0.6; }
-          100% { transform: translateY(300px); opacity: 0; }
-        }
-      `}</style>
-      {/* Cyber Eclipse Ambient Halo (Reference Image Top Center Effect) */}
-      <div
-        style={{
-          position: 'absolute',
-          top: '320px',
-          left: '50%',
-          width: '560px',
-          height: '560px',
-          pointerEvents: 'none',
-          zIndex: 0,
-          animation: 'eclipsePulse 7s ease-in-out infinite',
-        }}
-      >
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            borderRadius: '50%',
-            background:
-              'radial-gradient(circle, var(--color-primary) 0%, rgba(57, 255, 106, 0.08) 55%, transparent 72%)',
-            filter: 'blur(70px)',
-            opacity: 0.35,
-          }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            borderRadius: '50%',
-            background:
-              'radial-gradient(circle, transparent 60%, var(--color-primary) 68%, rgba(57, 255, 106, 0.15) 74%, transparent 78%)',
-            filter: 'drop-shadow(var(--color-glow))',
-          }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            inset: '16%',
-            borderRadius: '50%',
-            background: 'var(--color-bg)',
-          }}
-        />
-      </div>
-      {/* Top Navbar
-      <header
-        style={{
-          position: 'relative',
-          zIndex: 10,
-          maxWidth: '1100px',
-          margin: '0 auto',
-          padding: '24px 0',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div
-            style={{
-              width: 38,
-              height: 38,
-              borderRadius: 10,
-              background: 'var(--color-bg-container)',
-              border: '1px solid var(--color-border-secondary)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'var(--color-primary)',
-              boxShadow: 'var(--color-glow)',
-            }}
-          >
-            <CompassOutlined style={{ fontSize: 18 }} />
-          </div>
-          <span
-            style={{ fontWeight: 800, fontSize: 16, letterSpacing: 1.5, fontFamily: 'monospace' }}
-          >
-            UMBRA<span style={{ color: 'var(--color-primary)' }}>VAULT</span>
-          </span>
-        </div>
-
-        <nav
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-            padding: '4px 6px',
-            borderRadius: 30,
-            background: 'var(--color-bg-container)',
-            border: '1px solid var(--color-border)',
-            boxShadow: '0 4px 14px rgba(0,0,0,0.06)',
-          }}
-        >
-          {['Vision', 'Architecture', 'Protocol', 'Intelligence'].map((tab, idx) => {
-            const isActive = activeTab === idx
-            return (
-              <button
-                key={tab}
-                type="button"
-                onClick={() => setActiveTab(idx)}
-                style={{
-                  border: isActive
-                    ? '1px solid var(--color-border-secondary)'
-                    : '1px solid transparent',
-                  background: isActive ? 'var(--color-bg-hover)' : 'transparent',
-                  color: isActive ? 'var(--color-primary)' : 'var(--color-text-secondary)',
-                  fontWeight: isActive ? 700 : 500,
-                  fontSize: 12,
-                  fontFamily: 'monospace',
-                  padding: '6px 16px',
-                  borderRadius: 20,
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                }}
-              >
-                {tab}
-              </button>
-            )
-          })}
-        </nav>
-
-        <button
-          type="button"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            padding: '8px 18px',
-            borderRadius: 8,
-            background: 'var(--color-primary)',
-            color: 'var(--color-bg)',
-            border: 'none',
-            fontSize: 12,
-            fontWeight: 700,
-            letterSpacing: 1,
-            fontFamily: 'monospace',
-            cursor: 'pointer',
-            boxShadow: 'var(--color-glow)',
-            transition: 'opacity 0.2s ease',
-          }}
-        >
-          <LockOutlined /> ENTER VAULT
-        </button>
-      </header> */}
-      {/* Hero Section */}
-      <section
-        style={{
-          position: 'relative',
-          zIndex: 5,
-          maxWidth: '820px',
-          margin: '0 auto',
-          textAlign: 'center',
-          paddingTop: 60,
-          paddingBottom: 40,
-        }}
-      >
-        <div
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 8,
-            padding: '4px 14px',
-            borderRadius: 20,
-            background: 'var(--color-bg-container)',
-            border: '1px solid var(--color-border-secondary)',
-            marginBottom: 24,
-          }}
-        >
-          <span
-            style={{
-              width: 7,
-              height: 7,
-              borderRadius: '50%',
-              background: 'var(--color-primary)',
-              display: 'inline-block',
-              animation: 'termBlink 1.5s infinite',
-            }}
-          />
-          <span
-            style={{
-              fontSize: 11,
-              fontFamily: 'monospace',
-              letterSpacing: 1.5,
-              color: 'var(--color-text-secondary)',
-            }}
-          >
-            root@vault:~# cat core_manifest.txt
-          </span>
-        </div>
-
-        <h1
-          style={{
-            fontSize: ' clamp(32px, 5vw, 54px)',
-            fontWeight: 800,
-            letterSpacing: '-0.02em',
-            lineHeight: 1.15,
-            margin: '0 0 18px 0',
-          }}
-        >
-          Engineering unyielding clarity &amp;{' '}
-          <span
-            style={{
-              background:
-                'linear-gradient(90deg, var(--color-primary) 0%, var(--primitive-green-300, #7dffb0) 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
-            autonomous resilience.
-          </span>
-        </h1>
-
-        <p
-          style={{
-            fontSize: 13.5,
-            lineHeight: 1.65,
-            fontFamily: 'monospace',
-            color: 'var(--color-text-secondary)',
-            maxWidth: '600px',
-            margin: '0 auto 32px auto',
-          }}
-        >
-          &ldquo;The quieter you become, the more you are able to hear.&rdquo;
-          <br />
-          <span style={{ color: 'var(--color-primary)', fontWeight: 600 }}>
-            We do not hack systems, we study them.
-          </span>
-        </p>
-
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 14 }}>
-          <button
-            type="button"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              padding: '12px 24px',
-              borderRadius: 8,
-              background: 'var(--color-primary)',
-              color: 'var(--color-bg)',
-              border: 'none',
-              fontSize: 12,
-              fontWeight: 700,
-              fontFamily: 'monospace',
-              letterSpacing: 1,
-              cursor: 'pointer',
-              boxShadow: 'var(--color-glow)',
-            }}
-          >
-            EXPLORE ARCHITECTURE <RightOutlined style={{ fontSize: 11 }} />
-          </button>
-
-          <button
-            type="button"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              padding: '12px 24px',
-              borderRadius: 8,
-              background: 'var(--color-bg-container)',
-              border: '1px solid var(--color-border)',
-              color: 'var(--color-text)',
-              fontSize: 12,
-              fontWeight: 600,
-              fontFamily: 'monospace',
-              cursor: 'pointer',
-            }}
-          >
-            <CodeOutlined style={{ color: 'var(--color-primary)' }} /> READ SPEC
-          </button>
-        </div>
-      </section>
-      {/* 3 Core Cards Section (Matches the 3 feature cards from your image) */}
-      <section
-        style={{
-          position: 'relative',
-          zIndex: 5,
-          maxWidth: '1100px',
-          margin: '40px auto 0 auto',
-        }}
-      >
-        <div
+      {/* ---------- Nav ---------- */}
+      <div style={{ padding: '20px clamp(16px, 4vw, 40px) 0' }}>
+        <header
           style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            marginBottom: 20,
-            borderBottom: '1px solid var(--color-border)',
-            paddingBottom: 10,
+            maxWidth: '760px',
+            margin: '0 auto',
+            padding: '10px 10px 10px 20px',
+            borderRadius: '999px',
+            backgroundColor: colors.navBg,
+            border: `1px solid ${colors.cardBorder}`,
+            boxShadow: '0 12px 40px rgba(0,0,0,0.35)',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <EyeOutlined style={{ color: 'var(--color-primary)', fontSize: 14 }} />
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              fontWeight: 700,
+              fontSize: '0.95rem',
+              color: colors.navText,
+            }}
+          >
             <span
               style={{
-                fontSize: 11,
-                fontFamily: 'monospace',
-                letterSpacing: 2,
-                color: 'var(--color-text-muted)',
-                fontWeight: 700,
-              }}
-            >
-              CORE DIRECTIVES
-            </span>
-          </div>
-          <span style={{ fontSize: 11, fontFamily: 'monospace', color: 'var(--color-text-muted)' }}>
-            STATUS: ENCRYPTED // 03 NODES
-          </span>
-        </div>
-
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: 20,
-          }}
-        >
-          {cards.map((item, index) => {
-            const isHovered = hoveredCard === index
-            return (
-              <div
-                key={item.id}
-                onMouseEnter={() => setHoveredCard(index)}
-                onMouseLeave={() => setHoveredCard(null)}
-                style={{
-                  position: 'relative',
-                  padding: 26,
-                  borderRadius: 'var(--radius, 12px)',
-                  background: 'var(--color-bg-container)',
-                  border: isHovered
-                    ? '1px solid var(--color-border-secondary)'
-                    : '1px solid var(--color-border)',
-                  boxShadow: isHovered ? 'var(--color-glow)' : 'none',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  minHeight: 280,
-                  boxSizing: 'border-box',
-                  overflow: 'hidden',
-                  transition: 'all 0.25s ease',
-                  transform: isHovered ? 'translateY(-3px)' : 'translateY(0)',
-                }}
-              >
-                {/* Scanline Sweep animation */}
-                {isHovered && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      height: 2,
-                      background: 'var(--color-primary)',
-                      boxShadow: '0 0 10px var(--color-primary)',
-                      animation: 'scanSweep 1.8s ease-in-out infinite',
-                      pointerEvents: 'none',
-                    }}
-                  />
-                )}
-
-                <div>
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      marginBottom: 20,
-                    }}
-                  >
-                    <div
-                      style={{
-                        padding: 10,
-                        borderRadius: 10,
-                        background: 'var(--color-bg-hover)',
-                        border: '1px solid var(--color-border)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      {item.icon}
-                    </div>
-                    <div style={{ textAlign: 'right' }}>
-                      <div
-                        style={{
-                          fontSize: 15,
-                          fontWeight: 800,
-                          fontFamily: 'monospace',
-                          color: 'var(--color-primary)',
-                        }}
-                      >
-                        {item.stat}
-                      </div>
-                      <div
-                        style={{
-                          fontSize: 9.5,
-                          fontFamily: 'monospace',
-                          color: 'var(--color-text-muted)',
-                          letterSpacing: 0.5,
-                        }}
-                      >
-                        {item.statLabel}
-                      </div>
-                    </div>
-                  </div>
-
-                  <h3
-                    style={{
-                      fontSize: 17,
-                      fontWeight: 700,
-                      margin: '0 0 4px 0',
-                      color: 'var(--color-text)',
-                    }}
-                  >
-                    {item.title}
-                  </h3>
-                  <h4
-                    style={{
-                      fontSize: 11.5,
-                      fontFamily: 'monospace',
-                      fontWeight: 600,
-                      margin: '0 0 12px 0',
-                      color: 'var(--color-primary)',
-                      opacity: 0.9,
-                    }}
-                  >
-                    {item.subtitle}
-                  </h4>
-
-                  <p
-                    style={{
-                      fontSize: 12.5,
-                      lineHeight: 1.6,
-                      color: 'var(--color-text-secondary)',
-                      margin: 0,
-                    }}
-                  >
-                    {item.description}
-                  </p>
-                </div>
-
-                <div
-                  style={{
-                    marginTop: 22,
-                    paddingTop: 14,
-                    borderTop: '1px solid var(--color-border)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    fontSize: 10.5,
-                    fontFamily: 'monospace',
-                    color: 'var(--color-text-muted)',
-                  }}
-                >
-                  <span>DIRECTIVE_{item.id}</span>
-                  <RightOutlined
-                    style={{
-                      fontSize: 10,
-                      color: 'var(--color-primary)',
-                      opacity: isHovered ? 1 : 0.3,
-                      transition: 'opacity 0.2s ease',
-                    }}
-                  />
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      </section>
-      {/* Bottom Footer */}
-      <footer
-        style={{
-          position: 'relative',
-          zIndex: 5,
-          maxWidth: '1100px',
-          margin: '60px auto 0 auto',
-          paddingTop: 20,
-          borderTop: '1px solid var(--color-border)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          fontSize: 11,
-          fontFamily: 'monospace',
-          color: 'var(--color-text-muted)',
-        }}
-      >
-        <span>&copy; {new Date().getFullYear()} UMBRAVAULT SECURITY SYSTEMS</span>
-        <div style={{ display: 'flex', gap: 18, alignItems: 'center' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span
-              style={{
-                width: 6,
-                height: 6,
+                width: 20,
+                height: 20,
                 borderRadius: '50%',
-                background: 'var(--color-primary)',
+                background:
+                  'conic-gradient(from 90deg, var(--term-green), var(--primitive-green-300), var(--term-green-dim), var(--term-green))',
+                display: 'inline-block',
+                boxShadow: `0 0 0 3px ${colors.navBg} inset, var(--color-glow)`,
               }}
             />
-            ENCRYPTED ARCHITECTURE
-          </span>
-          <span>LATENCY: 8ms</span>
+            Eterna Cloud
+          </div>
+
+          <nav
+            className="eh-nav-links"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '26px',
+              fontSize: '0.82rem',
+              color: colors.navTextMuted,
+              fontWeight: 500,
+            }}
+          >
+            <a href="#solution" className="eh-nav-link" style={{ color: colors.navTextMuted }}>
+              Our Solution
+            </a>
+            <a href="#experience" className="eh-nav-link" style={{ color: colors.navTextMuted }}>
+              Key Experience
+            </a>
+            <a href="#about" className="eh-nav-link" style={{ color: colors.navTextMuted }}>
+              About Us
+            </a>
+          </nav>
+
+          <a
+            href="#contact"
+            className="eh-btn-contact"
+            style={{
+              backgroundColor: colors.accent,
+              color: colors.onAccent,
+              fontSize: '0.82rem',
+              fontWeight: 600,
+              padding: '10px 24px',
+              borderRadius: '999px',
+              textDecoration: 'none',
+            }}
+          >
+            Contact
+          </a>
+        </header>
+      </div>
+
+      {/* ---------- Hero ---------- */}
+      <section
+        style={{
+          position: 'relative',
+          padding: 'clamp(48px, 10vw, 90px) 20px clamp(56px, 8vw, 80px)',
+          textAlign: 'center',
+          overflow: 'hidden',
+        }}
+      >
+        {/* warm glow blob, upper right */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            top: '-10%',
+            right: '-15%',
+            width: '55vw',
+            maxWidth: '520px',
+            height: '55vw',
+            maxHeight: '520px',
+            borderRadius: '50%',
+            background: `radial-gradient(circle, color-mix(in srgb, ${colors.ring} 30%, transparent) 0%, color-mix(in srgb, ${colors.ringDim} 25%, transparent) 45%, transparent 72%)`,
+            filter: 'blur(30px)',
+            pointerEvents: 'none',
+          }}
+        />
+
+        {/* crescent ring */}
+        <div
+          className="eh-ring"
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 'min(420px, 78vw)',
+            height: 'min(420px, 78vw)',
+            borderRadius: '50%',
+            background: `conic-gradient(from 200deg, transparent 0deg, ${colors.ring} 60deg, ${colors.ringDim} 130deg, transparent 210deg, transparent 360deg)`,
+            filter: 'blur(2px)',
+            pointerEvents: 'none',
+            WebkitMask:
+              'radial-gradient(circle, transparent 60%, black 61%, black 64%, transparent 65%)',
+            mask: 'radial-gradient(circle, transparent 60%, black 61%, black 64%, transparent 65%)',
+          }}
+        />
+
+        <div style={{ position: 'relative', maxWidth: '520px', margin: '0 auto' }}>
+          <p
+            style={{
+              fontSize: '0.85rem',
+              fontWeight: 600,
+              marginBottom: '18px',
+              backgroundImage: `linear-gradient(90deg, ${colors.ringSoft} 0%, ${colors.ring} 50%, ${colors.ringDim} 100%)`,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
+          >
+            Our business is clarity, consistency &amp; unity
+          </p>
+
+          <h1
+            className="eh-headline"
+            style={{
+              fontSize: 'clamp(1.9rem, 5vw, 2.5rem)',
+              lineHeight: 1.25,
+              fontWeight: 600,
+              color: colors.text,
+              margin: 0,
+            }}
+          >
+            We are value creators
+            <br />
+            with hyperfocus
+          </h1>
         </div>
-      </footer>
+
+        {/* offer badge + section heading */}
+        <div style={{ position: 'relative', marginTop: 'clamp(70px, 12vw, 120px)' }}>
+          <span
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              fontSize: '0.72rem',
+              fontWeight: 600,
+              color: colors.textMuted,
+              backgroundColor: 'var(--color-bg-hover)',
+              border: `1px solid ${colors.cardBorder}`,
+              borderRadius: '999px',
+              padding: '6px 16px',
+              marginBottom: '18px',
+            }}
+          >
+            ✦ What we offer
+          </span>
+          <h2
+            style={{
+              fontSize: 'clamp(1.3rem, 3vw, 1.7rem)',
+              fontWeight: 600,
+              margin: 0,
+            }}
+          >
+            One service
+          </h2>
+        </div>
+      </section>
+
+      {/* ---------- Cards ---------- */}
+      <section
+        style={{
+          padding: '0 20px clamp(56px, 8vw, 90px)',
+          maxWidth: '1080px',
+          margin: '0 auto',
+        }}
+      >
+        <div
+          className="eh-cards-grid"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '18px',
+          }}
+        >
+          {SERVICES.map((s, i) => (
+            <div
+              key={s.title}
+              className="eh-card"
+              style={{
+                position: 'relative',
+                minHeight: '260px',
+                borderRadius: '20px',
+                padding: '22px',
+                border: `1px solid ${colors.cardBorder}`,
+                background: `linear-gradient(180deg, ${colors.cardBg} 0%, ${colors.cardBg} 55%, color-mix(in srgb, ${colors.ring} 16%, ${colors.cardBg}) 130%)`,
+                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-end',
+              }}
+            >
+              {/* faint radiating line pattern */}
+              <svg
+                aria-hidden="true"
+                width="100%"
+                height="140"
+                viewBox="0 0 240 140"
+                style={{ position: 'absolute', top: 0, left: 0, opacity: 0.35 }}
+              >
+                {Array.from({ length: 7 }).map((_, k) => (
+                  <path
+                    key={k}
+                    d={`M ${20 + i * 10} 0 Q ${120} ${60 + k * 6} ${240} ${20 + k * 14}`}
+                    style={{ stroke: colors.cardBorderStrong }}
+                    strokeWidth="0.6"
+                    fill="none"
+                  />
+                ))}
+              </svg>
+
+              <Star top={i === 0 ? 30 : 18} left={i === 1 ? 28 : 18} size={i === 0 ? 10 : 6} />
+              <Star top={i === 2 ? 20 : 70} left={i === 2 ? 130 : 45} size={5} delay={0.6} />
+              {i === 1 && <Star top={40} left={165} size={12} delay={0.3} />}
+
+              <h3
+                style={{
+                  position: 'relative',
+                  fontSize: '1.05rem',
+                  fontWeight: 600,
+                  color: colors.text,
+                  margin: '0 0 10px',
+                  whiteSpace: 'pre-line',
+                  lineHeight: 1.35,
+                }}
+              >
+                {s.title}
+              </h3>
+              <p
+                style={{
+                  position: 'relative',
+                  fontSize: '0.82rem',
+                  lineHeight: 1.55,
+                  color: colors.textMuted,
+                  margin: 0,
+                }}
+              >
+                {s.body}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ---------- Closing statement ---------- */}
+      <section
+        style={{
+          padding: '0 20px clamp(70px, 10vw, 110px)',
+          textAlign: 'center',
+        }}
+      >
+        <div
+          className="eh-icon-float"
+          aria-hidden="true"
+          style={{
+            width: 34,
+            height: 34,
+            margin: '0 auto 28px',
+            borderRadius: '50%',
+            background: `radial-gradient(circle at 35% 30%, ${colors.ring}, ${colors.ringDim} 70%)`,
+            boxShadow: `0 0 24px 4px color-mix(in srgb, ${colors.ring} 40%, transparent)`,
+          }}
+        />
+        <p
+          style={{
+            maxWidth: '480px',
+            margin: '0 auto',
+            fontSize: 'clamp(1.1rem, 2.6vw, 1.35rem)',
+            fontWeight: 500,
+            lineHeight: 1.5,
+            color: colors.text,
+          }}
+        >
+          We set out to create the ideal business scenario. The one that turns isolated moments of
+          excellence into a{' '}
+          <span style={{ color: colors.textMuted2 }}>
+            single, dependable rhythm your whole team can trust.
+          </span>
+        </p>
+      </section>
     </div>
   )
 }
-
-export default About

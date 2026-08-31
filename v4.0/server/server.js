@@ -10,6 +10,7 @@ const requestLogger = require("./middleware/request.logger");
 const errorHandler = require("./middleware/error.handler");
 const notFoundHandler = require("./middleware/notFoundHandler.middleware");
 const connectDB = require("./config/db");
+const kafkaService = require("./services/kafka.service");
 
 const authRoutes = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes");
@@ -41,10 +42,11 @@ app.use(
 app.use(express.json({ limit: "1mb" }));
 app.use(cookieParser());
 app.use(requestLogger);
-
+kafkaService.connectKafka();
 app.use(async (req, res, next) => {
   try {
     await connectDB();
+
     next();
   } catch (err) {
     next(err);

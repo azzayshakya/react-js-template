@@ -1,0 +1,100 @@
+/* AboutUs.css — pairs with AboutUs.jsx.
+   Everything that CAN be inline is inline in the component;
+   this file only holds keyframes, :hover and @media, which
+   inline style attributes can't express. */
+
+@keyframes eh-ring-pulse {
+  0%,
+  100% {
+    opacity: 0.85;
+    filter: blur(0px);
+  }
+  50% {
+    opacity: 1;
+    filter: blur(0.5px);
+  }
+}
+
+@keyframes eh-drift {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes eh-twinkle {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.eh-ring {
+  animation: eh-ring-pulse 5s ease-in-out infinite;
+}
+
+.eh-icon-float {
+  animation: eh-drift 4s ease-in-out infinite;
+}
+
+.eh-star {
+  animation: eh-twinkle 2.6s ease-in-out infinite;
+}
+
+.eh-card {
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.eh-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--color-border-secondary);
+}
+
+.eh-nav-link {
+  position: relative;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.eh-nav-link:hover {
+  color: var(--color-text) !important;
+}
+
+.eh-btn-contact {
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+}
+
+.eh-btn-contact:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--color-glow);
+}
+
+@media (max-width: 720px) {
+  .eh-nav-links {
+    display: none !important;
+  }
+  .eh-cards-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .eh-headline {
+    font-size: clamp(1.8rem, 8vw, 2.4rem) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eh-ring,
+  .eh-icon-float,
+  .eh-star {
+    animation: none !important;
+  }
+}
