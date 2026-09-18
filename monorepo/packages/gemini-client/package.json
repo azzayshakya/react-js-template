@@ -1,0 +1,9 @@
+{
+  "name": "@monorepo/gemini-client",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "dependencies": {
+    "@google/genai": "^0.14.0"
+  }
+}

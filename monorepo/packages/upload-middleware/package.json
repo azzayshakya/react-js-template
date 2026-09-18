@@ -1,0 +1,9 @@
+{
+  "name": "@monorepo/upload-middleware",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "dependencies": {
+    "multer": "^2.0.0"
+  }
+}
