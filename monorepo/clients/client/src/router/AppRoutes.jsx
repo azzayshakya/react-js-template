@@ -13,7 +13,6 @@ import MainLayout from '@/layouts/MainLayout'
 import AboutUsPage from '@/pages/About/About'
 import LoginPage from '@/pages/Auth/Login'
 import SignupPage from '@/pages/Auth/Register'
-import UserManagementPage from '@/pages/UserRoleMangegment/UserManagementPage'
 
 import ProtectedRoute from './ProtectedRoute'
 import ROUTE_ELEMENTS from './RouteElements'
@@ -43,11 +42,7 @@ const AppRoutes = () => {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
 
-        <Route path="/role" element={<UserManagementPage />} />
-
-        {/* Everything inside this Route shares the MainLayout */}
-        <Route element={<MainLayout userRole={user?.role ?? undefined} />}>
-          {/* 1. Mapped sidebar routes */}
+        <Route element={<MainLayout userRole={user?.role ?? 'user'} />}>
           {flatMenu.map((item) => {
             const path = ROUTES[item.key]
             const Element = ROUTE_ELEMENTS[item.key]
