@@ -10,6 +10,7 @@
   "scripts": {
     "dev:task-service": "npm run dev --workspace=services/task-service",
     "start:task-service": "npm run start --workspace=services/task-service",
-    "dev:web-client": "npm run dev --workspace=clients/web-client"
+    "dev:web-client": "npm run dev --workspace=clients/web-client",
+    "dev:client": "npm run dev --workspace=clients/client"
   }
 }
