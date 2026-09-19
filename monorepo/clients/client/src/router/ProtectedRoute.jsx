@@ -3,13 +3,15 @@ import { useSelector } from 'react-redux'
 import { Navigate, useLocation } from 'react-router-dom'
 
 const ProtectedRoute = ({ menuKey, children }) => {
+
+
   const location = useLocation()
   const { isAuthenticated, user } = useSelector((s) => s.user)
-  if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />
-  }
+  // if (!isAuthenticated) {
+  //   return <Navigate to="/login" state={{ from: location }} replace />
+  // }
 
-  if (menuKey && !hasMenuPermission(menuKey, user?.role)) {
+  if (menuKey && !hasMenuPermission(menuKey, "user")) {
     return <Navigate to="/unauthorized" replace />
   }
 

@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
 
-import AppBootstrap from './AppBootstrap'
+// import AppBootstrap from './AppBootstrap'
 import AppRoutes from './router/AppRoutes'
 
 import './styles/index.css'
@@ -18,9 +18,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <Provider store={store}>
       <ThemeProvider>
         <BrowserRouter>
-          <AppBootstrap>
+          {/* <AppBootstrap> */}
             <AppRoutes />
-          </AppBootstrap>
+          {/* </AppBootstrap> */}
         </BrowserRouter>
       </ThemeProvider>
     </Provider>
