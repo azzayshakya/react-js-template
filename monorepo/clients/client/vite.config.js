@@ -1,3 +1,4 @@
+// vite.config.js
 /// <reference types="vitest" />
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -11,6 +12,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 export default defineConfig({
   plugins: [tailwindcss(), react()],
   resolve: {
+    dedupe: ['react', 'react-dom'],
     alias: {
       '@': path.resolve(__dirname, 'src'),
       '@devStack': path.resolve(__dirname, 'devStack'),

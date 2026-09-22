@@ -1,9 +1,10 @@
-import ThemeProvider from '@devStack/constants/Theme-Provider'
-import { store } from '@devStack/store'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
+
+import ThemeProvider from '@devStack/constants/Theme-Provider'
+import { store } from '@devStack/store'
 
 // import AppBootstrap from './AppBootstrap'
 import AppRoutes from './router/AppRoutes'

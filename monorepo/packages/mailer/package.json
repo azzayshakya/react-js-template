@@ -1,9 +1,12 @@
 {
   "name": "@monorepo/mailer",
   "version": "1.0.0",
-  "private": true,
-  "main": "index.js",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
   "dependencies": {
-    "nodemailer": "^10.0.10"
+    "nodemailer": "^6.9.13"
   }
 }

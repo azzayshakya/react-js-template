@@ -1,41 +1,29 @@
-const express = require("express");
-const createLogger = require("@monorepo/logger");
-const { connectDB } = require("@monorepo/mongo-client");
-const createRedisClient = require("@monorepo/redis-client");
-const createKafkaClient = require("@monorepo/kafka-client");
-const createJwtUtils = require("@monorepo/jwt-utils");
-const createMailer = require("@monorepo/mailer");
-const createCloudinaryClient = require("@monorepo/cloudinary-client");
-const createGeminiClient = require("@monorepo/gemini-client");
-
-const env = require("./config/env");
-const healthRouter = require("./routes/health.route");
-const taskRouter = require("./routes/task.route");
-const uploadRouter = require("./routes/upload.route");
-const aiRouter = require("./routes/ai.route");
-const mailRouter = require("./routes/mail.route");
+import express from "express";
+import process from "node:process";
+import createLogger from "@monorepo/logger";
+import { createRedisClient, closeRedisClient } from "@monorepo/redis-client";
+import { createMailer } from "@monorepo/mailer";
+import { createKafkaClient } from "@monorepo/kafka-client";
+import env from "./config/env.js";
 
 const SERVICE_NAME = "task-service";
 const logger = createLogger(SERVICE_NAME);
 
 async function start() {
-  // --- Redis: connect first, it's needed even if Mongo/Kafka are slow to come up
-  const redisClient = createRedisClient(env.REDIS_URL, logger);
-
-  // --- MongoDB
-  if (env.MONGO_URI) {
-    try {
-      await connectDB(env.MONGO_URI, logger);
-    } catch {
-      logger.warn(
-        "Starting without MongoDB - task routes will fail until it's reachable",
-      );
-    }
-  } else {
-    logger.warn("MONGO_URI not set - skipping MongoDB connection");
+  // --- 1. Redis ---
+  let redisClient = null;
+  try {
+    redisClient = createRedisClient({ url: env.REDIS_URL, logger });
+    if (redisClient.status === "wait") await redisClient.connect();
+    await redisClient.ping();
+    logger.info("Redis ready");
+  } catch (err) {
+    logger.error(`Redis connection failed: ${err.message || err}`);
+    process.exit(1);
   }
 
-  // --- Kafka (optional - only connect if explicitly enabled)
+  // --- 2. Kafka Producer ---
+  let kafkaProducer = null;
   if (env.KAFKA_ENABLED) {
     try {
       const kafka = createKafkaClient(
@@ -48,91 +36,106 @@ async function start() {
         },
         logger,
       );
-      await kafka.connectProducer();
+
+      kafkaProducer = kafka.createProducer();
+      await kafkaProducer.connect();
     } catch (err) {
-      logger.warn(`Kafka not reachable, continuing without it: ${err.message}`);
+      logger.warn(
+        `Kafka failed to connect, continuing without it: ${err.message}`,
+      );
+      kafkaProducer = null;
     }
   } else {
     logger.info("Kafka disabled (set KAFKA_ENABLED=true to enable)");
   }
 
-  // --- JWT: no external connection needed, just requires secrets to be set
-  const jwtUtils = createJwtUtils(env.JWT);
-  if (!env.JWT.accessToken.secret) {
-    logger.warn("JWT_ACCESS_SECRET not set - token signing will fail if used");
-  }
-
-  // --- Mail (optional)
+  // --- 3. Mailer ---
   let mailer = null;
   if (env.MAIL_ENABLED) {
     try {
-      mailer = createMailer(env.MAIL, logger);
+      mailer = createMailer({
+        smtp: env.MAIL.smtp,
+        from: env.MAIL.from,
+        logger,
+      });
+      await mailer.verify();
     } catch (err) {
-      logger.warn(`Mailer not available: ${err.message}`);
+      logger.warn(`Mailer failed: ${err.message}`);
+      mailer = null;
     }
-  } else {
-    logger.info("Mail disabled (set MAIL_ENABLED=true to enable)");
   }
 
-  // --- Cloudinary (optional)
-  let cloudinaryClient = null;
-  if (env.CLOUDINARY_ENABLED) {
-    try {
-      cloudinaryClient = createCloudinaryClient(env.CLOUDINARY, logger);
-    } catch (err) {
-      logger.warn(`Cloudinary not available: ${err.message}`);
-    }
-  } else {
-    logger.info("Cloudinary disabled (set CLOUDINARY_ENABLED=true to enable)");
-  }
-
-  // --- Gemini (optional)
-  let geminiClient = null;
-  if (env.GEMINI_ENABLED) {
-    try {
-      geminiClient = createGeminiClient(env.GEMINI, logger);
-    } catch (err) {
-      logger.warn(`Gemini not available: ${err.message}`);
-    }
-  } else {
-    logger.info("Gemini disabled (set GEMINI_ENABLED=true to enable)");
-  }
-
-  // --- Express app
+  // --- 4. Express Server & Routes ---
   const app = express();
   app.use(express.json());
 
-  app.use(healthRouter(redisClient));
-  app.use("/api", taskRouter);
+  app.locals.redis = redisClient;
+  if (kafkaProducer) app.locals.kafkaProducer = kafkaProducer;
+  if (mailer) app.locals.mailer = mailer;
 
-  // only mount routes whose dependency actually connected - keeps the API
-  // surface honest about what's really available in this environment
-  if (cloudinaryClient) app.use("/api", uploadRouter(cloudinaryClient));
-  if (geminiClient) app.use("/api", aiRouter(geminiClient));
-  if (mailer) app.use("/api", mailRouter(mailer));
-
-  // central error handler - every ApiError thrown in routes lands here
-  app.use((err, req, res, next) => {
-    const statusCode = err.statusCode || 500;
-    if (!err.isOperational) logger.error(err.stack);
-
-    res.status(statusCode).json({
-      statusCode,
-      success: false,
-      message: err.message || "Internal server error",
-      errors: err.errors || [],
+  // Unified Health Check
+  app.get("/health", async (req, res) => {
+    res.status(200).json({
+      status: "ok",
+      service: SERVICE_NAME,
+      redis: "healthy",
+      kafka: kafkaProducer?.isConnected ? "connected" : "disabled/offline",
+      mailer: mailer?.isVerified ? "ready" : "disabled/offline",
+      timestamp: new Date().toISOString(),
     });
   });
 
-  app.listen(env.PORT, () => {
+  // Test Kafka event publishing
+  app.post("/api/events/publish", async (req, res, next) => {
+    if (!kafkaProducer) {
+      return res
+        .status(503)
+        .json({ success: false, message: "Kafka producer is offline" });
+    }
+
+    try {
+      const {
+        topic = "task-events",
+        eventName = "TASK_CREATED",
+        data = {},
+      } = req.body;
+
+      await kafkaProducer.sendEvent({
+        topic,
+        key: data.id || Date.now().toString(),
+        value: {
+          event: eventName,
+          payload: data,
+          timestamp: new Date().toISOString(),
+        },
+      });
+
+      res
+        .status(200)
+        .json({ success: true, message: `Event published to ${topic}` });
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  const server = app.listen(env.PORT, () => {
     logger.info(`${SERVICE_NAME} listening on port ${env.PORT}`);
   });
 
-  process.on("SIGTERM", async () => {
-    logger.info("SIGTERM received, shutting down");
-    await redisClient.quit();
-    process.exit(0);
-  });
+  // Graceful termination handling
+  const handleShutdown = async (signal) => {
+    logger.info(`${signal} received: closing connections...`);
+    server.close(async () => {
+      if (kafkaProducer) await kafkaProducer.disconnect();
+      if (mailer) await mailer.close();
+      if (redisClient) await closeRedisClient(logger);
+      logger.info("Shutdown complete.");
+      process.exit(0);
+    });
+  };
+
+  process.on("SIGTERM", () => handleShutdown("SIGTERM"));
+  process.on("SIGINT", () => handleShutdown("SIGINT"));
 }
 
 start();

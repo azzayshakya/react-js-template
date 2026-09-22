@@ -1,62 +1,124 @@
-const winston = require("winston");
+import winston from "winston";
+import path from "node:path";
+import process from "node:process";
 
 const { combine, timestamp, printf, colorize, errors, json } = winston.format;
 
-const LEVEL_COLORS = {
-  error: "red",
-  warn: "yellow",
-  info: "cyan",
-  http: "magenta",
-  debug: "gray",
+const LEVEL_STYLES = {
+  error: { icon: "✖", color: "red" },
+  warn: { icon: "⚠", color: "yellow" },
+  info: { icon: "ℹ", color: "cyan" },
+  http: { icon: "→", color: "magenta" },
+  verbose: { icon: "…", color: "blue" },
+  debug: { icon: "🐛", color: "gray" },
+  silly: { icon: "✧", color: "gray" },
 };
 
-winston.addColors(LEVEL_COLORS);
+// Register custom level colors
+winston.addColors(
+  Object.fromEntries(
+    Object.entries(LEVEL_STYLES).map(([level, style]) => [level, style.color]),
+  ),
+);
+
+const MAX_LABEL_LENGTH = Math.max(
+  ...Object.keys(LEVEL_STYLES).map((l) => l.length),
+);
 
 /**
- * Dev format: human readable, colorized, tagged with the service name.
- * Example: 10:32:11  INFO  [task-service]  MongoDB connected
+ * Strips ANSI color escape sequences from a string.
  */
-const devFormat = (serviceName) =>
-  combine(
-    colorize({ all: true }),
-    timestamp({ format: "HH:mm:ss" }),
+function stripAnsi(text = "") {
+  return text.replace(/\x1b\[[0-9;]*m/g, "");
+}
+
+/**
+ * Formats level badges like '✖ ERROR  ' with consistent alignment.
+ */
+function formatLevelBadge(level) {
+  const plain = stripAnsi(level);
+  const style = LEVEL_STYLES[plain] || { icon: "•" };
+  const label = `${style.icon} ${plain.toUpperCase()}`.padEnd(
+    MAX_LABEL_LENGTH + 2,
+  );
+
+  return level.replace(plain.toUpperCase(), label).replace(plain, label);
+}
+
+/**
+ * Custom development log formatter with icons, service prefix, and clean formatting.
+ */
+function createDevFormat(serviceName) {
+  return combine(
+    colorize({ all: false }),
+    timestamp({ format: "HH:mm:ss.SSS" }),
     errors({ stack: true }),
-    printf(({ level, message, timestamp, stack }) => {
-      const tag = `[${serviceName}]`;
-      return stack
-        ? `${timestamp}  ${level}  ${tag}  ${message}\n${stack}`
-        : `${timestamp}  ${level}  ${tag}  ${message}`;
+    printf(({ level, message, timestamp: ts, stack, service, ...meta }) => {
+      const coloredBadge = formatLevelBadge(level);
+      const time = `\x1b[90m${ts}\x1b[0m`;
+      const svc = `\x1b[36m[${service || serviceName}]\x1b[0m`;
+
+      // Filter out internal Winston symbols so only explicit user meta is serialized
+      const userMeta = Object.fromEntries(
+        Object.entries(meta).filter(([key]) => typeof key === "string"),
+      );
+
+      const hasExtraData = Object.keys(userMeta).length > 0;
+      const extraPayload = hasExtraData
+        ? `\n  ${JSON.stringify(userMeta, null, 2)}`
+        : "";
+
+      if (stack) {
+        const divider = `\x1b[90m${"─".repeat(60)}\x1b[0m`;
+        return `${time} ${coloredBadge} ${svc} ${message}\n${divider}\n${stack}\n${divider}`;
+      }
+
+      return `${time} ${coloredBadge} ${svc} ${message}${extraPayload}`;
     }),
   );
+}
 
 /**
- * Prod format: structured JSON, easy to ship to a log aggregator (ELK, Datadog, etc.)
+ * Standard structured JSON logging for cloud/production environments.
  */
-const prodFormat = (serviceName) =>
-  combine(
-    timestamp(),
-    errors({ stack: true }),
-    json(),
-    winston.format((info) => {
-      info.service = serviceName;
-      return info;
-    })(),
+const prodFormat = combine(timestamp(), errors({ stack: true }), json());
+
+/**
+ * Factory to create service-scoped logger instances.
+ *
+ * @param {string} [serviceName="app"] - Identifier shown in log tags
+ * @returns {winston.Logger}
+ */
+export function createLogger(serviceName = "app") {
+  const isServerless = Boolean(
+    process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME,
   );
+  const isProduction = process.env.NODE_ENV === "production";
 
-/**
- * createLogger('task-service') -> a winston logger tagged with that service's name.
- * Every service/package in the mono-repo should create its own tagged instance
- * instead of sharing one anonymous logger, so logs are traceable across services.
- */
-function createLogger(serviceName = "app") {
-  const isProd = process.env.NODE_ENV === "production";
+  const transports = [new winston.transports.Console()];
+
+  // Persist files only in local/server environments, not in serverless runtimes
+  if (!isServerless && !isProduction) {
+    const logsDir = path.resolve(process.cwd(), "logs");
+
+    transports.push(
+      new winston.transports.File({
+        filename: path.join(logsDir, "error.log"),
+        level: "error",
+      }),
+      new winston.transports.File({
+        filename: path.join(logsDir, "combined.log"),
+      }),
+    );
+  }
 
   return winston.createLogger({
-    level: process.env.LOG_LEVEL || "info",
-    format: isProd ? prodFormat(serviceName) : devFormat(serviceName),
-    transports: [new winston.transports.Console()],
+    level: process.env.LOG_LEVEL || "http",
+    defaultMeta: { service: serviceName },
+    format: isProduction ? prodFormat : createDevFormat(serviceName),
+    transports,
     exitOnError: false,
   });
 }
 
-module.exports = createLogger;
+export default createLogger;
