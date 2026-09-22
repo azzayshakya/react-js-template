@@ -34,6 +34,10 @@ const env = {
     },
     from: process.env.MAIL_FROM || "no-reply@umbravault.com",
   },
+
+  GEMINI_ENABLED: process.env.GEMINI_ENABLED === "true",
+  GEMINI_API_KEY: process.env.GEMINI_API_KEY?.trim(),
+  GEMINI_MODEL: process.env.GEMINI_MODEL || "gemini-2.5-flash",
 };
 
 export default env;

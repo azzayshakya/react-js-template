@@ -1,9 +1,0 @@
-{
-  "name": "@monorepo/cloudinary-client",
-  "version": "1.0.0",
-  "private": true,
-  "main": "index.js",
-  "dependencies": {
-    "cloudinary": "^2.4.0"
-  }
-}

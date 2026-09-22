@@ -4,7 +4,11 @@ import createLogger from "@monorepo/logger";
 import { createRedisClient, closeRedisClient } from "@monorepo/redis-client";
 import { createMailer } from "@monorepo/mailer";
 import { createKafkaClient } from "@monorepo/kafka-client";
+import { createGeminiClient } from "@monorepo/gemini-client";
+
 import env from "./config/env.js";
+import ApiError from "../../../packages/server-utils/src/api-error.js";
+import ApiResponse from "../../../packages/server-utils/src/api-response.js";
 
 const SERVICE_NAME = "task-service";
 const logger = createLogger(SERVICE_NAME);
@@ -63,34 +67,55 @@ async function start() {
       logger.warn(`Mailer failed: ${err.message}`);
       mailer = null;
     }
+  } else {
+    logger.info("Mailer disabled (set MAIL_ENABLED=true to enable)");
   }
 
-  // --- 4. Express Server & Routes ---
+  // --- 4. Gemini AI Client ---
+  let geminiClient = null;
+  if (env.GEMINI_ENABLED && env.GEMINI_API_KEY) {
+    try {
+      geminiClient = createGeminiClient({
+        apiKey: env.GEMINI_API_KEY,
+        model: env.GEMINI_MODEL,
+        logger,
+      });
+      logger.info(`Gemini AI service ready with model: ${env.GEMINI_MODEL}`);
+    } catch (err) {
+      logger.warn(`Gemini client failed to initialize: ${err.message}`);
+      geminiClient = null;
+    }
+  } else {
+    logger.info("Gemini disabled (set GEMINI_ENABLED=true to enable)");
+  }
+
+  // --- 5. Express Server & Routes ---
   const app = express();
   app.use(express.json());
 
   app.locals.redis = redisClient;
   if (kafkaProducer) app.locals.kafkaProducer = kafkaProducer;
   if (mailer) app.locals.mailer = mailer;
+  if (geminiClient) app.locals.gemini = geminiClient;
 
   // Unified Health Check
   app.get("/health", async (req, res) => {
-    res.status(200).json({
-      status: "ok",
-      service: SERVICE_NAME,
-      redis: "healthy",
-      kafka: kafkaProducer?.isConnected ? "connected" : "disabled/offline",
-      mailer: mailer?.isVerified ? "ready" : "disabled/offline",
-      timestamp: new Date().toISOString(),
-    });
+    res.status(200).json(
+      ApiResponse.ok({
+        service: SERVICE_NAME,
+        redis: "healthy",
+        kafka: kafkaProducer?.isConnected ? "connected" : "disabled/offline",
+        mailer: mailer?.isVerified ? "ready" : "disabled/offline",
+        gemini: geminiClient ? "ready" : "disabled/offline",
+        timestamp: new Date().toISOString(),
+      }),
+    );
   });
 
-  // Test Kafka event publishing
+  // Kafka Event Publishing Route
   app.post("/api/events/publish", async (req, res, next) => {
     if (!kafkaProducer) {
-      return res
-        .status(503)
-        .json({ success: false, message: "Kafka producer is offline" });
+      return next(ApiError.internal("Kafka producer is offline or disabled"));
     }
 
     try {
@@ -110,12 +135,58 @@ async function start() {
         },
       });
 
-      res
-        .status(200)
-        .json({ success: true, message: `Event published to ${topic}` });
+      res.status(200).json(ApiResponse.ok(null, `Event published to ${topic}`));
     } catch (err) {
       next(err);
     }
+  });
+
+  // Gemini AI Text Generation Route
+  app.post("/api/ai/generate", async (req, res, next) => {
+    if (!geminiClient) {
+      return next(
+        ApiError.internal("Gemini AI service is offline or disabled"),
+      );
+    }
+
+    try {
+      const { prompt, model } = req.body;
+
+      if (!prompt || typeof prompt !== "string") {
+        throw ApiError.badRequest("Prompt is required and must be a string");
+      }
+
+      const generatedText = await geminiClient.generateText(prompt, { model });
+
+      res
+        .status(200)
+        .json(
+          ApiResponse.ok(
+            { text: generatedText },
+            "Text generated successfully",
+          ),
+        );
+    } catch (err) {
+      next(err.isOperational ? err : ApiError.internal(err.message));
+    }
+  });
+
+  // Central Error Handler
+  app.use((err, req, res, next) => {
+    const isOperational = Boolean(err.isOperational);
+    const statusCode = isOperational ? err.statusCode : 500;
+    const message = isOperational ? err.message : "Internal server error";
+
+    if (!isOperational) {
+      logger.error(err.stack || err.message);
+    }
+
+    res.status(statusCode).json({
+      statusCode,
+      success: false,
+      message,
+      errors: err.errors || [],
+    });
   });
 
   const server = app.listen(env.PORT, () => {
