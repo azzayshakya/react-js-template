@@ -121,4 +121,8 @@ export function createLogger(serviceName = "app") {
   });
 }
 
-export default createLogger;
+// Pre-configured default logger instance
+export const logger = createLogger(process.env.SERVICE_NAME || "app");
+
+// Export default as the logger instance itself
+export default logger;

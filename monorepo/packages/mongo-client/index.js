@@ -1,13 +1,12 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 let cached = { conn: null, promise: null };
 
 /**
  * connectDB(uri, logger) -> mongoose connection
- * Caches the connection so calling connectDB() multiple times (e.g. in dev
- * hot-reload, or from multiple modules) never opens more than one connection.
+ * Caches the connection across reloads.
  */
-async function connectDB(uri, logger = console) {
+export async function connectDB(uri, logger = console) {
   if (!uri) {
     throw new Error("MONGO_URI is required to connect to MongoDB");
   }
@@ -17,7 +16,7 @@ async function connectDB(uri, logger = console) {
   if (!cached.promise) {
     cached.promise = mongoose
       .connect(uri, {
-        serverSelectionTimeoutMS: 5000, // fail fast instead of hanging on a bad URI
+        serverSelectionTimeoutMS: 5000,
       })
       .then((instance) => {
         logger.info("MongoDB connected");
@@ -33,16 +32,21 @@ async function connectDB(uri, logger = console) {
     throw err;
   }
 
-  mongoose.connection.on("disconnected", () => logger.warn("MongoDB disconnected"));
-  mongoose.connection.on("error", (err) => logger.error(`MongoDB error: ${err.message}`));
+  mongoose.connection.on("disconnected", () =>
+    logger.warn("MongoDB disconnected"),
+  );
+  mongoose.connection.on("error", (err) =>
+    logger.error(`MongoDB error: ${err.message}`),
+  );
 
   return cached.conn;
 }
 
-async function disconnectDB() {
+export async function disconnectDB() {
   if (!cached.conn) return;
   await mongoose.disconnect();
   cached = { conn: null, promise: null };
 }
 
-module.exports = { connectDB, disconnectDB, mongoose };
+export { mongoose };
+export default connectDB;
